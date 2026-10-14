@@ -1,0 +1,80 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  html {
+    -webkit-text-size-adjust: 100%;
+    scroll-behavior: smooth;
+  }
+  body {
+    font-family: 'Plus Jakarta Sans', system-ui, sans-serif;
+    background-color: #f8f7f4;
+    color: #2c1f13;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-rendering: optimizeLegibility;
+  }
+  h1, h2, h3, h4 {
+    letter-spacing: -0.025em;
+  }
+  .dark body {
+    background-color: #1a1612;
+    color: #e0d2bc;
+  }
+}
+
+@layer components {
+  .card {
+    @apply rounded-2xl border border-earth-200/60 bg-white shadow-sm transition-all duration-200 dark:border-earth-700/40 dark:bg-earth-800;
+  }
+  .card-hover {
+    @apply hover:shadow-lg hover:border-grove-300 hover:-translate-y-0.5 dark:hover:border-grove-500;
+  }
+  .btn {
+    @apply inline-flex items-center justify-center gap-2 rounded-xl px-4 py-2.5 text-sm font-semibold transition-all duration-200 active:scale-95 disabled:opacity-50 disabled:pointer-events-none;
+  }
+  .btn-primary {
+    @apply btn bg-grove-600 text-white hover:bg-grove-700 shadow-sm hover:shadow-md dark:bg-grove-500 dark:hover:bg-grove-400;
+  }
+  .btn-secondary {
+    @apply btn bg-white text-grove-700 border border-grove-200 hover:bg-grove-50 dark:bg-earth-800 dark:text-grove-300 dark:border-grove-700 dark:hover:bg-earth-700;
+  }
+  .btn-harvest {
+    @apply btn bg-harvest-500 text-white hover:bg-harvest-600 shadow-sm;
+  }
+  .btn-clay {
+    @apply btn bg-clay-500 text-white hover:bg-clay-600 shadow-sm;
+  }
+  .btn-ghost {
+    @apply btn text-earth-600 hover:bg-earth-100 dark:text-earth-300 dark:hover:bg-earth-700;
+  }
+  .input {
+    @apply w-full rounded-xl border border-earth-200 bg-white px-4 py-2.5 text-sm text-earth-900 placeholder:text-earth-400 transition-colors focus:border-grove-400 focus:outline-none focus:ring-2 focus:ring-grove-200 dark:border-earth-600 dark:bg-earth-700 dark:text-earth-100 dark:placeholder:text-earth-400 dark:focus:border-grove-400;
+  }
+  .label {
+    @apply block text-sm font-semibold text-earth-700 mb-1.5 dark:text-earth-200;
+  }
+  .badge {
+    @apply inline-flex items-center gap-1 rounded-full px-2.5 py-0.5 text-xs font-semibold;
+  }
+  .section-title {
+    @apply font-serif text-lg text-earth-800 dark:text-earth-100;
+  }
+}
+
+@layer utilities {
+  .no-scrollbar {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+  .no-scrollbar::-webkit-scrollbar {
+    display: none;
+  }
+  .text-balance {
+    text-wrap: balance;
+  }
+  .safe-bottom {
+    padding-bottom: env(safe-area-inset-bottom, 0px);
+  }
+}
