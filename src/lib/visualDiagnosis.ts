@@ -63,3 +63,35 @@ export function analyzeLivestockPhoto(photoDataUrl: string): Promise<VisualDiagn
     }, 650);
   });
 }
+
+export function analyzeGeneralPhoto(photoDataUrl: string): Promise<VisualDiagnosisResult> {
+  void photoDataUrl;
+  return new Promise((resolve) => {
+    window.setTimeout(() => {
+      const results: VisualDiagnosisResult[] = [
+        {
+          label: 'Sin signos visibles de problema',
+          confidence: 0.85,
+          severity: 'success',
+          summary: 'La imagen no muestra señales claras de plagas, enfermedades o estrés en el cultivo o animal.',
+          recommendations: ['Continúa con el monitoreo regular.', 'Registra tus observaciones para llevar un historial.'],
+        },
+        {
+          label: 'Posible estrés o condición a revisar',
+          confidence: 0.78,
+          severity: 'warning',
+          summary: 'Se observan cambios de color, manchas o postura que podrían indicar estrés hídrico, nutricional o早期的 signos de enfermedad.',
+          recommendations: ['Toma una fotografía más cercana del área afectada.', 'Compara con días anteriores si tienes registros.'],
+        },
+        {
+          label: 'Posible plaga o enfermedad',
+          confidence: 0.74,
+          severity: 'danger',
+          summary: 'La imagen muestra manchas, lesiones o daños compatibles con una plaga o enfermedad.',
+          recommendations: ['Aísla el área afectada para evitar propagación.', 'Consulta al asistente IA con detalles del cultivo para recomendaciones específicas.'],
+        },
+      ];
+      resolve(results[Math.floor(Math.random() * results.length)]);
+    }, 650);
+  });
+}

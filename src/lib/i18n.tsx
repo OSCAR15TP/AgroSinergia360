@@ -125,6 +125,12 @@ const es: Dict = {
   'ai.groq_footer': 'Asistente potenciado con Groq IA · Respuestas avanzadas',
   'ai.local_footer': 'Conocimiento agronómico integrado · Configura Groq IA en Mi Finca para respuestas avanzadas',
   'ai.groq_hint': 'Potencia tu asistente con IA Groq (gratis). Obtén respuestas más detalladas sobre cualquier tema agronómico. Configura tu clave API en Mi Finca → Configuración de IA.',
+  'ai.save_chat': 'Guardar conversación',
+  'ai.history': 'Historial',
+  'ai.clear': 'Borrar chat',
+  'ai.image_diag': 'Diagnóstico por imagen',
+  'ai.image_diag_desc': 'Sube una fotografía del cultivo o animal para obtener una orientación inicial sobre su estado.',
+  'ai.no_saved': 'No hay conversaciones guardadas aún.',
 };
 
 const en: Dict = {
@@ -242,6 +248,12 @@ const en: Dict = {
   'ai.groq_footer': 'Powered by Groq AI · Advanced responses',
   'ai.local_footer': 'Built-in agronomic knowledge · Configure Groq AI in My Farm for advanced responses',
   'ai.groq_hint': 'Power up your assistant with Groq AI (free). Get more detailed answers on any agronomic topic. Set up your API key in My Farm → AI Settings.',
+  'ai.save_chat': 'Save conversation',
+  'ai.history': 'History',
+  'ai.clear': 'Clear chat',
+  'ai.image_diag': 'Image diagnosis',
+  'ai.image_diag_desc': 'Upload a photo of your crop or animal to get an initial assessment of its condition.',
+  'ai.no_saved': 'No saved conversations yet.',
 };
 
 const pt: Dict = {
@@ -359,6 +371,12 @@ const pt: Dict = {
   'ai.groq_footer': 'Powered by Groq IA · Respostas avançadas',
   'ai.local_footer': 'Conhecimento agronômico integrado · Configure Groq IA em Minha Fazenda para respostas avançadas',
   'ai.groq_hint': 'Potencialize seu assistente com Groq IA (grátis). Obtenha respostas mais detalhadas sobre qualquer tema agronômico. Configure sua API key em Minha Fazenda → Configuração de IA.',
+  'ai.save_chat': 'Salvar conversa',
+  'ai.history': 'Histórico',
+  'ai.clear': 'Limpar chat',
+  'ai.image_diag': 'Diagnóstico por imagem',
+  'ai.image_diag_desc': 'Envie uma foto da cultura ou animal para obter uma avaliação inicial do seu estado.',
+  'ai.no_saved': 'Nenhuma conversa salva ainda.',
 };
 
 const dicts: Record<Lang, Dict> = { es, en, pt };

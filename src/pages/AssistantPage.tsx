@@ -1,13 +1,27 @@
 import { useState, useRef, useEffect } from 'react';
 import type { AppData } from '@/types';
-import { Sparkles, Send, MessageCircle, User, Trash2, Lightbulb, Cloud, CloudOff } from 'lucide-react';
+import { Sparkles, Send, MessageCircle, User, Trash2, Lightbulb, Cloud, CloudOff, Camera, Save, History, X } from 'lucide-react';
 import { getSuggestedQuestions, type ChatMessage } from '@/lib/agronomistAI';
 import { getAIResponse } from '@/lib/aiService';
 import { useI18n } from '@/lib/i18n';
 import { uid } from '@/hooks/useAppData';
+import { ImageDiagnosisModal, type VisualDiagnosisResult } from '@/components/ImageDiagnosisModal';
+import { analyzeGeneralPhoto } from '@/lib/visualDiagnosis';
 
 interface AssistantPageProps {
   data: AppData;
+}
+
+const CHAT_STORAGE_KEY = 'agro360_chat_history';
+
+function loadChatHistory(): ChatMessage[] {
+  try {
+    const stored = localStorage.getItem(CHAT_STORAGE_KEY);
+    if (stored) return JSON.parse(stored) as ChatMessage[];
+  } catch {
+    // ignore
+  }
+  return [];
 }
 
 function escapeHtml(value: string): string {
@@ -73,10 +87,13 @@ function renderMarkdown(text: string): string {
 
 export function AssistantPage({ data }: AssistantPageProps) {
   const { lang, t } = useI18n();
-  const [messages, setMessages] = useState<ChatMessage[]>([]);
+  const [messages, setMessages] = useState<ChatMessage[]>(loadChatHistory);
   const [input, setInput] = useState('');
   const [isThinking, setIsThinking] = useState(false);
   const [aiSource, setAiSource] = useState<'groq' | 'local' | null>(null);
+  const [showImageDiagnosis, setShowImageDiagnosis] = useState(false);
+  const [showHistory, setShowHistory] = useState(false);
+  const [savedChats, setSavedChats] = useState<{ id: string; name: string; date: number; messages: ChatMessage[] }[]>([]);
   const scrollRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -84,6 +101,14 @@ export function AssistantPage({ data }: AssistantPageProps) {
       scrollRef.current.scrollTop = scrollRef.current.scrollHeight;
     }
   }, [messages, isThinking]);
+
+  useEffect(() => {
+    try {
+      localStorage.setItem(CHAT_STORAGE_KEY, JSON.stringify(messages));
+    } catch {
+      // ignore storage errors
+    }
+  }, [messages]);
 
   const send = async (text: string) => {
     const q = text.trim();
@@ -115,6 +140,77 @@ export function AssistantPage({ data }: AssistantPageProps) {
   const clearChat = () => {
     setMessages([]);
     setAiSource(null);
+    try {
+      localStorage.removeItem(CHAT_STORAGE_KEY);
+    } catch {
+      // ignore
+    }
+  };
+
+  const saveChat = () => {
+    if (messages.length === 0) return;
+    const firstMsg = messages.find(m => m.role === 'user')?.text ?? 'Conversación';
+    const name = firstMsg.length > 30 ? firstMsg.slice(0, 30) + '...' : firstMsg;
+    const newSavedChat = {
+      id: uid(),
+      name,
+      date: Date.now(),
+      messages: [...messages],
+    };
+    const updated = [newSavedChat, ...savedChats].slice(0, 20);
+    setSavedChats(updated);
+    try {
+      localStorage.setItem('agro360_saved_chats', JSON.stringify(updated));
+    } catch {
+      // ignore
+    }
+  };
+
+  const loadSavedChats = () => {
+    try {
+      const stored = localStorage.getItem('agro360_saved_chats');
+      if (stored) setSavedChats(JSON.parse(stored));
+    } catch {
+      // ignore
+    }
+  };
+
+  const openHistory = () => {
+    loadSavedChats();
+    setShowHistory(true);
+  };
+
+  const loadChat = (chat: { messages: ChatMessage[] }) => {
+    setMessages(chat.messages);
+    setShowHistory(false);
+  };
+
+  const deleteSavedChat = (id: string) => {
+    const updated = savedChats.filter(c => c.id !== id);
+    setSavedChats(updated);
+    try {
+      localStorage.setItem('agro360_saved_chats', JSON.stringify(updated));
+    } catch {
+      // ignore
+    }
+  };
+
+  const handleImageDiagnosis = async (photoDataUrl: string): Promise<VisualDiagnosisResult> => {
+    const result = await analyzeGeneralPhoto(photoDataUrl);
+    const summaryMsg: ChatMessage = {
+      id: uid(),
+      role: 'user',
+      text: '[Diagnóstico por imagen]',
+      timestamp: Date.now(),
+    };
+    const resultMsg: ChatMessage = {
+      id: uid(),
+      role: 'assistant',
+      text: `**Diagnóstico visual: ${result.label}**\n\n${result.summary}\n\n**Recomendaciones:**\n${result.recommendations.map(r => `- ${r}`).join('\n')}\n\n_Nivel de confianza: ${Math.round(result.confidence * 100)}%_`,
+      timestamp: Date.now(),
+    };
+    setMessages(prev => [...prev, summaryMsg, resultMsg]);
+    return result;
   };
 
   const hasGroqKey = !!data.farmConfig.groqApiKey;
@@ -140,11 +236,19 @@ export function AssistantPage({ data }: AssistantPageProps) {
             )}
           </div>
         </div>
-        {messages.length > 0 && (
-          <button onClick={clearChat} className="btn-ghost text-sm py-1.5 px-2.5">
-            <Trash2 className="h-4 w-4" />
+        <div className="flex gap-1">
+          <button onClick={saveChat} disabled={messages.length === 0} className="btn-ghost text-sm py-1.5 px-2.5 disabled:opacity-40" title={t('ai.save_chat')}>
+            <Save className="h-4 w-4" />
           </button>
-        )}
+          <button onClick={openHistory} className="btn-ghost text-sm py-1.5 px-2.5" title={t('ai.history')}>
+            <History className="h-4 w-4" />
+          </button>
+          {messages.length > 0 && (
+            <button onClick={clearChat} className="btn-ghost text-sm py-1.5 px-2.5" title={t('ai.clear')}>
+              <Trash2 className="h-4 w-4" />
+            </button>
+          )}
+        </div>
       </div>
 
       {!hasGroqKey && messages.length === 0 && (
@@ -213,6 +317,14 @@ export function AssistantPage({ data }: AssistantPageProps) {
       {/* Input bar */}
       <div className="border-t border-earth-200/60 bg-white/80 backdrop-blur pt-3 pb-1 dark:border-earth-700/40 dark:bg-earth-800/80">
         <div className="flex gap-2 items-end">
+          <button
+            onClick={() => setShowImageDiagnosis(true)}
+            disabled={isThinking}
+            className="flex h-[44px] w-[44px] flex-shrink-0 items-center justify-center rounded-xl border border-earth-200 bg-white text-earth-600 hover:border-grove-300 hover:bg-grove-50 hover:text-grove-600 transition-all disabled:opacity-50"
+            title={t('ai.image_diag')}
+          >
+            <Camera className="h-5 w-5" />
+          </button>
           <div className="flex-1 relative">
             <textarea
               value={input}
@@ -243,6 +355,52 @@ export function AssistantPage({ data }: AssistantPageProps) {
             : t('ai.local_footer')}
         </p>
       </div>
+
+      {/* Image Diagnosis Modal */}
+      <ImageDiagnosisModal
+        open={showImageDiagnosis}
+        onClose={() => setShowImageDiagnosis(false)}
+        title={t('ai.image_diag')}
+        description={t('ai.image_diag_desc')}
+        accent="sky"
+        analyze={handleImageDiagnosis}
+      />
+
+      {/* History Modal */}
+      {showHistory && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 animate-fade-in" onClick={() => setShowHistory(false)}>
+          <div className="w-full max-w-md mx-4 rounded-2xl bg-white shadow-2xl animate-scale-in" onClick={(e) => e.stopPropagation()}>
+            <div className="flex items-center justify-between border-b border-earth-100 p-4">
+              <div className="flex items-center gap-2">
+                <History className="h-5 w-5 text-grove-600" />
+                <h3 className="text-base font-bold text-earth-900">{t('ai.history')}</h3>
+              </div>
+              <button onClick={() => setShowHistory(false)} className="flex h-8 w-8 items-center justify-center rounded-lg text-earth-400 hover:bg-earth-100">
+                <X className="h-4 w-4" />
+              </button>
+            </div>
+            <div className="max-h-96 overflow-y-auto p-4 space-y-2">
+              {savedChats.length === 0 ? (
+                <p className="text-center text-sm text-earth-500 py-8">{t('ai.no_saved')}</p>
+              ) : (
+                savedChats.map((chat) => (
+                  <div key={chat.id} className="flex items-center justify-between rounded-xl border border-earth-200 p-3 hover:border-grove-300 transition-colors">
+                    <button onClick={() => loadChat(chat)} className="flex-1 text-left min-w-0">
+                      <p className="text-sm font-semibold text-earth-800 truncate">{chat.name}</p>
+                      <p className="text-xs text-earth-500 mt-0.5">
+                        {chat.messages.length} mensajes — {new Date(chat.date).toLocaleDateString(lang, { day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit' })}
+                      </p>
+                    </button>
+                    <button onClick={() => deleteSavedChat(chat.id)} className="flex h-8 w-8 items-center justify-center rounded-lg text-earth-400 hover:bg-clay-50 hover:text-clay-600 flex-shrink-0">
+                      <Trash2 className="h-4 w-4" />
+                    </button>
+                  </div>
+                ))
+              )}
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
@@ -269,10 +427,17 @@ function MessageBubble({ message }: { message: ChatMessage }) {
         <Sparkles className="h-4 w-4" />
       </div>
       <div className="card px-4 py-3 rounded-2xl rounded-tl-sm max-w-[85%]">
-        <div
-          className="text-sm text-earth-700 leading-relaxed [&_strong]:font-bold [&_strong]:text-earth-900 dark:text-earth-200 dark:[&_strong]:text-earth-100"
-          dangerouslySetInnerHTML={{ __html: renderMarkdown(message.text) }}
-        />
+        {message.text === '[Diagnóstico por imagen]' ? (
+          <div className="flex items-center gap-2 text-sm text-earth-500 italic">
+            <Camera className="h-4 w-4 text-grove-600" />
+            Diagnóstico por imagen
+          </div>
+        ) : (
+          <div
+            className="text-sm text-earth-700 leading-relaxed [&_strong]:font-bold [&_strong]:text-earth-900 dark:text-earth-200 dark:[&_strong]:text-earth-100"
+            dangerouslySetInnerHTML={{ __html: renderMarkdown(message.text) }}
+          />
+        )}
       </div>
     </div>
   );
