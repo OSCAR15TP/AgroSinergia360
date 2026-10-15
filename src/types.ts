@@ -29,6 +29,7 @@ export interface RicePlot {
   status: PlotStatus;
   rotationPhase: number;
   soilMoisture: number;
+  moistureZones?: { name: string; value: number }[];
   lastRotationDate: string;
   notes: string;
 }

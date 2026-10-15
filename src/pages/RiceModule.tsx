@@ -5,10 +5,12 @@ import { Alert } from '@/components/Alert';
 import { Badge, EmptyState, ProgressBar } from '@/components/UI';
 import { StatCard } from '@/components/StatCard';
 import {
-  Wheat, Plus, Trash2, Check, Droplets, CloudSun, Map, RefreshCw,
+  Wheat, Plus, Trash2, Check, Droplets, CloudSun, Map, RefreshCw, Camera,
   Thermometer, Sprout, AlertTriangle, Info, Eye, Calculator, X, ArrowRight,
 } from 'lucide-react';
 import { uid, formatDate, todayISO } from '@/hooks/useAppData';
+import { ImageDiagnosisModal } from '@/components/ImageDiagnosisModal';
+import { analyzeRicePhoto } from '@/lib/visualDiagnosis';
 
 interface RiceModuleProps {
   data: AppData;
@@ -27,6 +29,7 @@ const STATUS_INFO: Record<PlotStatus, { label: string; color: 'grove' | 'sky' | 
 export function RiceModule({ data, update }: RiceModuleProps) {
   const [tab, setTab] = useState<Tab>('plots');
   const [showAddPlot, setShowAddPlot] = useState(false);
+  const [showImageDiagnosis, setShowImageDiagnosis] = useState(false);
 
   const totalArea = data.ricePlots.reduce((s, p) => s + p.area, 0);
   const inProduction = data.ricePlots.filter(p => p.status === 'produccion').length;
@@ -45,6 +48,9 @@ export function RiceModule({ data, update }: RiceModuleProps) {
         <div>
           <h1 className="text-xl font-bold text-earth-900">Módulo Arroz</h1>
           <p className="text-sm text-earth-500">SIPAS, riego inteligente y monitoreo agroclimático</p>
+          <button onClick={() => setShowImageDiagnosis(true)} className="btn-secondary mt-2 text-xs py-1.5">
+            <Camera className="h-3.5 w-3.5" /> Diagnóstico por imagen
+          </button>
         </div>
       </div>
 
@@ -68,6 +74,15 @@ export function RiceModule({ data, update }: RiceModuleProps) {
       )}
       {tab === 'climate' && <ClimateTab plots={data.ricePlots} />}
       {tab === 'irrigation' && <IrrigationTab plots={data.ricePlots} />}
+
+      <ImageDiagnosisModal
+        open={showImageDiagnosis}
+        onClose={() => setShowImageDiagnosis(false)}
+        title="Diagnóstico visual del arroz"
+        description="Sube una imagen de las hojas o del cultivo para obtener una orientación inicial sobre estrés, plagas o enfermedades."
+        accent="sky"
+        analyze={analyzeRicePhoto}
+      />
     </div>
   );
 }
@@ -115,7 +130,13 @@ function PlotsTab({ data, update, showAddPlot, setShowAddPlot }: {
       ) : (
         <div className="space-y-3">
           {data.ricePlots.map((plot) => (
-            <PlotCard key={plot.id} plot={plot} onDelete={() => update(prev => ({ ...prev, ricePlots: prev.ricePlots.filter(p => p.id !== plot.id) }))} onRotate={() => rotatePlot(plot, update)} />
+            <PlotCard
+              key={plot.id}
+              plot={plot}
+              onDelete={() => update(prev => ({ ...prev, ricePlots: prev.ricePlots.filter(p => p.id !== plot.id) }))}
+              onRotate={() => rotatePlot(plot, update)}
+              onUpdate={(updated) => update(prev => ({ ...prev, ricePlots: prev.ricePlots.map(p => p.id === updated.id ? updated : p) }))}
+            />
           ))}
         </div>
       )}
@@ -153,7 +174,15 @@ function rotatePlot(plot: RicePlot, update: (updater: (prev: AppData) => AppData
   }));
 }
 
-function PlotCard({ plot, onDelete, onRotate }: { plot: RicePlot; onDelete: () => void; onRotate: () => void }) {
+function getMoistureZones(plot: RicePlot): { name: string; value: number }[] {
+  return plot.moistureZones ?? [
+    { name: 'Entrada', value: Math.max(0, Math.min(100, plot.soilMoisture + 5)) },
+    { name: 'Centro', value: plot.soilMoisture },
+    { name: 'Fondo', value: Math.max(0, Math.min(100, plot.soilMoisture - 5)) },
+  ];
+}
+
+function PlotCard({ plot, onDelete, onRotate, onUpdate }: { plot: RicePlot; onDelete: () => void; onRotate: () => void; onUpdate: (plot: RicePlot) => void }) {
   const info = STATUS_INFO[plot.status];
   const moistureColor = plot.soilMoisture < 30 ? 'clay' : plot.soilMoisture < 50 ? 'harvest' : 'grove';
   return (
@@ -172,7 +201,33 @@ function PlotCard({ plot, onDelete, onRotate }: { plot: RicePlot; onDelete: () =
       </div>
 
       <div className="mt-3">
-        <ProgressBar value={plot.soilMoisture} max={100} label="Humedad del suelo" unit="%" color={moistureColor as 'grove' | 'harvest' | 'clay'} />
+        <ProgressBar value={plot.soilMoisture} max={100} label="Humedad promedio del lote" unit="%" color={moistureColor as 'grove' | 'harvest' | 'clay'} />
+      </div>
+
+      <div className="mt-3 rounded-xl border border-sky-100 bg-sky-50/60 p-3">
+        <div className="mb-2 flex items-center justify-between">
+          <p className="text-xs font-bold text-sky-800">Humedad por zona</p>
+          <span className="text-[10px] text-sky-600">Actualiza cada punto</span>
+        </div>
+        <div className="grid grid-cols-3 gap-2">
+          {getMoistureZones(plot).map((zone, index) => (
+            <label key={zone.name} className="text-[10px] font-medium text-earth-500">
+              {zone.name}
+              <input
+                type="number"
+                min="0"
+                max="100"
+                value={zone.value}
+                onChange={(event) => {
+                  const value = Math.max(0, Math.min(100, Number(event.target.value) || 0));
+                  const zones = getMoistureZones(plot).map((current, currentIndex) => currentIndex === index ? { ...current, value } : current);
+                  onUpdate({ ...plot, soilMoisture: Math.round(zones.reduce((sum, current) => sum + current.value, 0) / zones.length), moistureZones: zones });
+                }}
+                className="input mt-1 px-2 py-1.5 text-xs"
+              />
+            </label>
+          ))}
+        </div>
       </div>
 
       <div className="mt-3 flex items-center justify-between">
@@ -210,6 +265,11 @@ function AddPlotModal({ open, onClose, onAdd }: {
       rotationPhase: 0,
       soilMoisture: 50,
       lastRotationDate: todayISO(),
+      moistureZones: [
+        { name: 'Entrada', value: 50 },
+        { name: 'Centro', value: 50 },
+        { name: 'Fondo', value: 50 },
+      ],
       notes: '',
     });
     setName('');

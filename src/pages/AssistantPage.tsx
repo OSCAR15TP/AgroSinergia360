@@ -10,10 +10,65 @@ interface AssistantPageProps {
   data: AppData;
 }
 
+function escapeHtml(value: string): string {
+  return value.replace(/[&<>"']/g, (character) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#039;' })[character] ?? character);
+}
+
+function formatInline(value: string): string {
+  return escapeHtml(value).replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>');
+}
+
 function renderMarkdown(text: string): string {
-  return text
-    .replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>')
-    .replace(/\n/g, '<br />');
+  const lines = text.split('\n');
+  const html: string[] = [];
+  let listType: 'ul' | 'ol' | null = null;
+  let tableRows: string[] = [];
+
+  const closeList = () => {
+    if (listType) html.push(`</${listType}>`);
+    listType = null;
+  };
+
+  const closeTable = () => {
+    if (tableRows.length === 0) return;
+    const rows = tableRows.filter(row => !/^\s*\|?\s*:?-{3,}/.test(row));
+    const [header, ...body] = rows;
+    html.push('<div class="overflow-x-auto my-3"><table class="w-full border-collapse text-left text-xs"><thead><tr>');
+    html.push(header.split('|').filter(Boolean).map(cell => `<th class="border-b border-earth-200 px-2 py-1.5 font-bold">${formatInline(cell.trim())}</th>`).join(''));
+    html.push('</tr></thead><tbody>');
+    body.forEach(row => {
+      html.push(`<tr>${row.split('|').filter(Boolean).map(cell => `<td class="border-b border-earth-100 px-2 py-1.5 align-top">${formatInline(cell.trim())}</td>`).join('')}</tr>`);
+    });
+    html.push('</tbody></table></div>');
+    tableRows = [];
+  };
+
+  lines.forEach((line) => {
+    if (line.trim().startsWith('|')) {
+      closeList();
+      tableRows.push(line);
+      return;
+    }
+    closeTable();
+    const bullet = line.match(/^\s*[-•]\s+(.+)/);
+    const numbered = line.match(/^\s*\d+[.)]\s+(.+)/);
+    if (bullet || numbered) {
+      const nextType = bullet ? 'ul' : 'ol';
+      if (listType !== nextType) {
+        closeList();
+        listType = nextType;
+        html.push(`<${listType} class="my-2 space-y-1 pl-5 ${listType === 'ul' ? 'list-disc' : 'list-decimal'}">`);
+      }
+      html.push(`<li>${formatInline((bullet ?? numbered)?.[1] ?? '')}</li>`);
+      return;
+    }
+    closeList();
+    if (line.trim()) html.push(`<p class="mb-2 last:mb-0">${formatInline(line)}</p>`);
+  });
+
+  closeList();
+  closeTable();
+  return html.join('');
 }
 
 export function AssistantPage({ data }: AssistantPageProps) {

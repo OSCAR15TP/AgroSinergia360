@@ -5,11 +5,13 @@ import { Alert } from '@/components/Alert';
 import { Badge, EmptyState, ProgressBar } from '@/components/UI';
 import { StatCard } from '@/components/StatCard';
 import {
-  Beef, Plus, Trash2, Check, Syringe, Scale, Heart, Baby,
+  Beef, Plus, Trash2, Check, Syringe, Scale, Heart, Baby, Camera,
   Map, AlertTriangle, Info, Leaf, X, ChevronRight, Calendar,
   TrendingUp, CircleDot, Recycle,
 } from 'lucide-react';
 import { uid, formatDate, todayISO, daysUntil } from '@/hooks/useAppData';
+import { ImageDiagnosisModal } from '@/components/ImageDiagnosisModal';
+import { analyzeLivestockPhoto } from '@/lib/visualDiagnosis';
 
 interface LivestockModuleProps {
   data: AppData;
@@ -38,6 +40,7 @@ export function LivestockModule({ data, update }: LivestockModuleProps) {
   const [showAddCattle, setShowAddCattle] = useState(false);
   const [showAddPaddock, setShowAddPaddock] = useState(false);
   const [selectedCattle, setSelectedCattle] = useState<string | null>(null);
+  const [showImageDiagnosis, setShowImageDiagnosis] = useState(false);
 
   const healthy = data.cattle.filter(c => c.healthStatus === 'sano').length;
   const avgWeight = data.cattle.length > 0
@@ -55,6 +58,9 @@ export function LivestockModule({ data, update }: LivestockModuleProps) {
         <div>
           <h1 className="text-xl font-bold text-earth-900">Módulo Ganadería</h1>
           <p className="text-sm text-earth-500">Trazabilidad, pastoreo rotacional y compostaje</p>
+          <button onClick={() => setShowImageDiagnosis(true)} className="btn-secondary mt-2 text-xs py-1.5">
+            <Camera className="h-3.5 w-3.5" /> Diagnóstico por imagen
+          </button>
         </div>
       </div>
 
@@ -91,6 +97,15 @@ export function LivestockModule({ data, update }: LivestockModuleProps) {
         <PaddocksTab data={data} update={update} showAddPaddock={showAddPaddock} setShowAddPaddock={setShowAddPaddock} />
       )}
       {tab === 'compost' && <CompostTab data={data} />}
+
+      <ImageDiagnosisModal
+        open={showImageDiagnosis}
+        onClose={() => setShowImageDiagnosis(false)}
+        title="Diagnóstico visual del ganado"
+        description="Sube una imagen del animal para obtener una orientación inicial sobre condición corporal y posibles signos de salud."
+        accent="clay"
+        analyze={analyzeLivestockPhoto}
+      />
     </div>
   );
 }
