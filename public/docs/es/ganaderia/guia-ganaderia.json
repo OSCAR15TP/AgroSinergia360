@@ -1,0 +1,38 @@
+{
+  "id": "ganaderia",
+  "module": "ganaderia",
+  "title": "Guía de Ganadería",
+  "summary": "Salud, vacunación, parasitismo, pastoreo, reproducción y bienestar animal.",
+  "sections": [
+    {
+      "title": "Plan de vacunación",
+      "keywords": ["vacuna", "vacunacion", "aftosa", "brucelosis", "rabia", "carbon"],
+      "content": "Fiebre aftosa cada 6 meses según calendario oficial. Brucelosis en hembras de 3-8 meses (dosis única). Carbón sintomático y edema maligno anual. Rabia anual en zonas de riesgo. Registrar fecha, lote y producto de cada aplicación."
+    },
+    {
+      "title": "Parasitismo",
+      "keywords": ["parasito", "parasitos", "garrapata", "desparasitar", "lombrices", "mosca"],
+      "content": "Desparasitar según análisis coprológico, no por calendario fijo, para evitar resistencia. Rotar principios activos cada año. Para garrapatas, combinar baños estratégicos con rotación de potreros."
+    },
+    {
+      "title": "Pastoreo rotacional",
+      "keywords": ["pastoreo", "potrero", "potreros", "rotacional", "carga animal", "pasto"],
+      "content": "Dividir en 6-12 potreros. Ocupación de 1-3 días y descanso de 30-45 días. Entrar con pasto de 25-30 cm y salir a 10-15 cm. Carga de 1-2 UA/ha en lluvias y 0,5-1 UA/ha en seca."
+    },
+    {
+      "title": "Reproducción",
+      "keywords": ["reproduccion", "preñez", "celo", "inseminacion", "parto", "toro"],
+      "content": "Meta: un parto por vaca al año (intervalo entre partos menor a 13 meses). Detectar celo dos veces al día. Condición corporal de 3 a 3,5 (escala 1-5) al servicio. Revisar toros antes de cada temporada de monta."
+    },
+    {
+      "title": "Peso y nutrición",
+      "keywords": ["peso", "ganancia", "nutricion", "sal mineral", "suplemento", "silaje", "heno"],
+      "content": "Ganancia esperada de 0,5-1,2 kg/animal/día. Sal mineralizada a voluntad. Para la época seca, preparar silaje o heno 3-4 meses antes. Pesar cada 30-60 días para ajustar la dieta."
+    },
+    {
+      "title": "Bienestar y estrés térmico",
+      "keywords": ["bienestar", "estres", "calor", "sombra", "agua", "jadeo"],
+      "content": "Garantizar agua limpia (40-60 L/animal/día) y sombra: árboles en potreros o sistemas silvopastoriles. Manejar el ganado en horas frescas. El estrés térmico reduce el consumo y la fertilidad."
+    }
+  ]
+}

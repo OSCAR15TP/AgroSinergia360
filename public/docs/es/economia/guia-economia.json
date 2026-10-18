@@ -1,0 +1,48 @@
+{
+  "id": "economia",
+  "module": "economia",
+  "title": "Economía Agrícola",
+  "summary": "Costos, punto de equilibrio, precios, crédito, inflación, comercialización y riesgo.",
+  "sections": [
+    {
+      "title": "Costos fijos y variables",
+      "keywords": ["costo", "costos", "fijo", "variable", "insumos", "mano de obra", "gasto"],
+      "content": "Costos fijos: no cambian con la producción (arriendo, depreciación, salarios permanentes). Costos variables: dependen de lo que se produce (semilla, fertilizante, jornales de cosecha). Registrarlos por cultivo permite saber cuál es realmente rentable."
+    },
+    {
+      "title": "Punto de equilibrio",
+      "keywords": ["punto de equilibrio", "equilibrio", "minimo", "cuanto vender", "precio minimo"],
+      "content": "Punto de equilibrio en unidades = costos fijos / (precio de venta - costo variable unitario). Indica cuánto hay que producir y vender para no perder. Si el precio de mercado baja de tu costo por kilo, conviene ajustar costos o buscar mejores canales de venta."
+    },
+    {
+      "title": "Rentabilidad y márgenes",
+      "keywords": ["rentabilidad", "margen", "ganancia", "utilidad", "roi", "beneficio"],
+      "content": "Margen bruto = ingresos - costos variables. Utilidad neta = margen bruto - costos fijos. Rentabilidad (ROI) = utilidad / inversión x 100. Compara siempre por hectárea para decidir qué cultivo ampliar."
+    },
+    {
+      "title": "Precios y comercialización",
+      "keywords": ["precio", "mercado", "vender", "venta", "comercializacion", "intermediario", "cooperativa", "exportacion"],
+      "content": "Vender en grupo (cooperativas o asociaciones) mejora el poder de negociación. Los cafés especiales y certificados (orgánico, comercio justo) obtienen primas sobre el precio base. Llevar registro mensual de precios ayuda a decidir cuándo vender."
+    },
+    {
+      "title": "Inflación y tipo de cambio",
+      "keywords": ["inflacion", "dolar", "tipo de cambio", "devaluacion", "precios suben", "tasa"],
+      "content": "La inflación encarece insumos importados (fertilizantes, agroquímicos) y una devaluación sube su costo en moneda local, pero favorece a quien exporta (café). Comprar insumos con anticipación y producir abono propio reduce la exposición."
+    },
+    {
+      "title": "Crédito y financiamiento",
+      "keywords": ["credito", "prestamo", "financiamiento", "banco", "interes", "deuda", "capital"],
+      "content": "Pedir crédito solo para inversiones que generen ingreso (riego, renovación de cafetales, mejora genética). Comparar la tasa efectiva anual y ajustar los pagos al calendario de cosecha. Regla práctica: las cuotas no deberían superar el 30-40% del flujo de caja esperado."
+    },
+    {
+      "title": "Flujo de caja y ahorro",
+      "keywords": ["flujo de caja", "liquidez", "ahorro", "presupuesto", "planificacion financiera"],
+      "content": "La agricultura tiene ingresos estacionales. Un presupuesto mensual con entradas y salidas permite anticipar meses sin ingresos. Guardar un fondo de reserva equivalente a 3 meses de gastos operativos."
+    },
+    {
+      "title": "Riesgo y seguros",
+      "keywords": ["riesgo", "seguro", "seguro agricola", "clima", "perdida", "diversificacion", "subsidio"],
+      "content": "Diversificar cultivos y ganadería reduce el riesgo de precio y clima. Los seguros agrícolas y programas públicos de apoyo cubren pérdidas por eventos climáticos; revisa los disponibles en tu país o con tu cooperativa."
+    }
+  ]
+}

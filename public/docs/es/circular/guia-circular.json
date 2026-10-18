@@ -1,0 +1,38 @@
+{
+  "id": "circular",
+  "module": "circular",
+  "title": "Economía Circular",
+  "summary": "Compostaje, estiércol, residuos, biogás, carbono y aprovechamiento de subproductos.",
+  "sections": [
+    {
+      "title": "Compostaje",
+      "keywords": ["compost", "compostaje", "pila", "voltear", "abono organico"],
+      "content": "Mezclar estiércol con material seco (paja, hojarasca) en proporción 2:1. Pilas de 1,5 m de altura, voltear cada 7-15 días y mantener 60-70% de humedad. Listo en 60-90 días: oscuro y sin olor. Aplicar 2-3 t/ha en arroz y 1-2 kg/planta en café."
+    },
+    {
+      "title": "Estiércol y biogás",
+      "keywords": ["estiercol", "biogas", "biodigestor", "biol", "metano"],
+      "content": "Un bovino produce 10-15 kg de estiércol al día. Un biodigestor convierte el estiércol en gas para cocinar y en biol, un fertilizante líquido que se aplica diluido 1:4 al follaje o al suelo."
+    },
+    {
+      "title": "Subproductos de cosecha",
+      "keywords": ["pulpa", "paja", "residuo", "residuos", "subproducto", "cascarilla", "lombricompost"],
+      "content": "Pulpa de café: compostar o usar en lombricompost. Paja de arroz: incorporar al suelo o usar como cobertura; nunca quemar. Cascarilla de arroz: sustrato para viveros o cama para animales."
+    },
+    {
+      "title": "Integración de la finca",
+      "keywords": ["integracion", "ciclo", "circular", "cerrar ciclo", "sinergia"],
+      "content": "Estiércol, compost, café y arroz forman un ciclo cerrado. La pastura SIPAS alimenta el ganado y el ganado fertiliza la pastura. Cerrar ciclos reduce la compra de fertilizantes hasta en 40%."
+    },
+    {
+      "title": "Carbono y suelo",
+      "keywords": ["carbono", "co2", "emisiones", "huella", "secuestro", "bonos"],
+      "content": "Cada 1% adicional de materia orgánica en una hectárea captura aproximadamente 30 t de CO2. Sistemas silvopastoriles, cero quema y compost aumentan el secuestro de carbono y pueden abrir acceso a mercados de bonos de carbono."
+    },
+    {
+      "title": "Valor económico de la circularidad",
+      "keywords": ["ahorro", "costo", "valor", "economia", "ingreso", "vender compost"],
+      "content": "El compost propio cuesta una fracción del fertilizante comercial. Los excedentes de compost, lombricompost o biol se pueden vender a fincas vecinas, generando un ingreso adicional."
+    }
+  ]
+}
