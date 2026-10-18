@@ -2,7 +2,27 @@ import type { AppData } from '@/types';
 import { generateResponse as localGenerate } from '@/lib/agronomistAI';
 import type { ChatMessage } from '@/lib/agronomistAI';
 
-function buildFarmContext(data: AppData): string {
+function getLocalGuideContext(): string | null {
+  if (typeof window === 'undefined') return null;
+
+  try {
+    const raw = window.localStorage.getItem('agro360_local_guide_context');
+    if (!raw) return null;
+
+    const parsed = JSON.parse(raw) as { title?: string; module?: string; content?: string };
+    if (parsed.content) {
+      const title = parsed.title ? `Guía local activa: ${parsed.title}` : 'Guía local activa';
+      const module = parsed.module ? `Módulo: ${parsed.module}` : '';
+      return [title, module, parsed.content].filter(Boolean).join('\n\n');
+    }
+
+    return raw;
+  } catch {
+    return null;
+  }
+}
+
+function buildFarmContext(data: AppData, localGuideContext?: string | null): string {
   const parts: string[] = [];
 
   parts.push(`Finca: ${data.farmConfig.farmName}`);
@@ -17,7 +37,7 @@ function buildFarmContext(data: AppData): string {
 
   if (data.coffeeDiagnoses.length > 0) {
     const last = data.coffeeDiagnoses[0];
-    parts.push(`Último diagnóstico de café: ${last.result} (${Math.round(last.confidence * 100)}% confianza) — pH: ${last.soilParams.ph}, P: ${last.soilParams.phosphorus} ppm, K: ${last.soilParams.potassium} cmol/kg, M.O: ${last.soilParams.organicMatter}%`);
+    parts.push(`Último diagnóstico de café: ${last.result} (${Math.round(last.confidence * 100)}% confianza) — pH: ${last.soilParams.ph}, P: ${last.soilParams.phosphorus} ppm, K: ${last.soilParams.potassium} cmol/kg`);
     parts.push(`Total diagnósticos de café: ${data.coffeeDiagnoses.length}`);
   }
 
@@ -41,6 +61,12 @@ function buildFarmContext(data: AppData): string {
     }
   }
 
+  if (localGuideContext) {
+    parts.push('');
+    parts.push('CONTEXTO LOCAL DE GUÍA:');
+    parts.push(localGuideContext);
+  }
+
   return parts.join('\n');
 }
 
@@ -51,6 +77,8 @@ export async function getAIResponse(
   language: 'es' | 'en' | 'pt' = 'es'
 ): Promise<{ text: string; source: 'groq' | 'local' }> {
   const groqApiKey = data.farmConfig.groqApiKey;
+  const localGuideContext = getLocalGuideContext();
+  const farmContext = buildFarmContext(data, localGuideContext);
 
   try {
     const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
@@ -67,7 +95,7 @@ export async function getAIResponse(
         message,
         conversationHistory: history.slice(-10).map(m => ({ role: m.role, text: m.text })),
         groqApiKey: groqApiKey || undefined,
-        farmContext: buildFarmContext(data),
+        farmContext,
         language,
       }),
     });
@@ -89,7 +117,6 @@ export async function getAIResponse(
 
     return { text: result.reply, source: 'groq' };
   } catch (err) {
-    // Fallback to local knowledge engine
     const localResponse = localGenerate(message, data);
     const errorMsg = err instanceof Error ? err.message : 'Error desconocido';
     const prefixed = groqApiKey
