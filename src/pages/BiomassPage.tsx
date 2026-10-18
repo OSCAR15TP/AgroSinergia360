@@ -46,31 +46,22 @@ function calculate(cows: number, coffeeHa: number, riceSacks: number) {
   const pulp = coffeeHa * COFFEE_PULP_KG_PER_HA;
   const husk = riceSacks * HUSK_KG_PER_RICE_SACK;
 
-  const parts = Math.min(manure / RATIO.manure, pulp / RATIO.pulp, husk / RATIO.husk);
-  const usedManure = parts * RATIO.manure;
-  const usedPulp = parts * RATIO.pulp;
-  const usedHusk = parts * RATIO.husk;
-  const totalMix = usedManure + usedPulp + usedHusk;
+  const totalMix = manure + pulp + husk;
   const compostKg = totalMix * COMPOST_YIELD;
   const compostSacks = Math.floor(compostKg / SACK_KG);
 
-  const leftovers = [
-    { name: 'estiércol', kg: manure - usedManure },
-    { name: 'pulpa de café', kg: pulp - usedPulp },
-    { name: 'cascarilla de arroz', kg: husk - usedHusk },
-  ].filter(l => l.kg > 1);
-
-  const limiting =
-    parts === manure / RATIO.manure ? 'estiércol'
-    : parts === pulp / RATIO.pulp ? 'pulpa de café'
-    : 'cascarilla de arroz';
+  const parts = Math.max(manure / RATIO.manure, pulp / RATIO.pulp, husk / RATIO.husk);
+  const missing = [
+    { name: 'estiércol', substitute: 'gallinaza, estiércol de cuy u oveja', kg: parts * RATIO.manure - manure },
+    { name: 'pulpa de café', substitute: 'hierba verde picada, cáscaras de plátano o restos de cocina', kg: parts * RATIO.pulp - pulp },
+    { name: 'cascarilla de arroz', substitute: 'hojas secas, paja, rastrojo de maíz o aserrín', kg: parts * RATIO.husk - husk },
+  ].filter(m => m.kg >= SACK_KG);
 
   return {
     manure, pulp, husk,
-    usedManure, usedPulp, usedHusk,
     compostKg, compostSacks,
     savings: compostSacks * COMPOST_PRICE_PER_SACK,
-    leftovers, limiting,
+    missing,
   };
 }
 
@@ -86,7 +77,7 @@ export function BiomassPage({ data }: BiomassPageProps) {
 
   const r = calculate(cows, coffeeHa, riceSacks);
   const info = REGION_INFO[region];
-  const hasAll = cows > 0 && coffeeHa > 0 && riceSacks > 0;
+  const hasAny = cows > 0 || coffeeHa > 0 || riceSacks > 0;
 
   return (
     <div className="space-y-6 animate-fade-in">
@@ -137,12 +128,11 @@ export function BiomassPage({ data }: BiomassPageProps) {
       <section className="card p-5" aria-labelledby="recipe-title">
         <h2 id="recipe-title" className="text-sm font-bold text-earth-800 mb-4">2. Tu receta de abono</h2>
 
-        {!hasAll ? (
+        {!hasAny ? (
           <div className="rounded-xl bg-harvest-50 border border-harvest-200 p-4 flex gap-3">
             <AlertTriangle className="h-5 w-5 text-harvest-600 flex-shrink-0" />
             <p className="text-sm text-earth-700">
-              Para esta receta necesitas los tres ingredientes: estiércol, pulpa de café y cascarilla de arroz.
-              Si te falta uno, puedes conseguirlo con un vecino y hacer el abono juntos.
+              Pon cuántas vacas, hectáreas de café o sacos de arroz tienes para calcular tu abono.
             </p>
           </div>
         ) : (
@@ -159,25 +149,33 @@ export function BiomassPage({ data }: BiomassPageProps) {
               </div>
             </div>
 
-            <p className="text-xs font-semibold text-earth-700 mb-2">Mezcla así (por cada 6 carretillas):</p>
-            <ul className="space-y-2">
-              <Ingredient icon={<Beef className="h-5 w-5" />} parts={3} name="Estiércol de vaca" role="Da el nitrógeno, la fuerza del abono" kg={r.usedManure} />
-              <Ingredient icon={<Coffee className="h-5 w-5" />} parts={2} name="Pulpa de café" role="Da potasio y alimenta a los microbios" kg={r.usedPulp} />
-              <Ingredient icon={<Wheat className="h-5 w-5" />} parts={1} name="Cascarilla de arroz" role="Deja pasar el aire y quita el exceso de agua" kg={r.usedHusk} />
-            </ul>
+            <div className="mb-3 rounded-xl border border-earth-200 bg-earth-50 p-3 text-xs text-earth-600 leading-relaxed">
+              <p className="font-semibold text-earth-800 mb-1">Cómo medir en el campo</p>
+              <p>1 saco = 50 kg · 1 carretilla llena ≈ 60 kg (un poco más que un saco).</p>
+              <p>La receta se mide en carretillas: no necesitas balanza.</p>
+            </div>
 
-            {r.leftovers.length > 0 && (
-              <div className="mt-4 rounded-xl bg-earth-50 p-3 flex gap-3">
-                <Bed className="h-5 w-5 text-earth-500 flex-shrink-0" />
-                <div className="text-xs text-earth-600 leading-relaxed">
-                  <p>
-                    Lo que limita tu abono es la <strong>{r.limiting}</strong>. Te sobra:{' '}
-                    {r.leftovers.map(l => `${kgToSacks(l.kg)} sacos de ${l.name}`).join(', ')}.
-                  </p>
-                  <p className="mt-1">
-                    <strong>Idea:</strong> usa la cascarilla que sobre como cama seca en el corral. Absorbe el orín
-                    del ganado y luego va directo a la próxima pila de abono.
-                  </p>
+            <p className="text-xs font-semibold text-earth-700 mb-2">Mezcla así: por cada 6 carretillas</p>
+            <ul className="space-y-2">
+              <Ingredient icon={<Beef className="h-5 w-5" />} parts={3} name="Estiércol de vaca" role="Da el nitrógeno, la fuerza del abono" kg={r.manure} />
+              <Ingredient icon={<Coffee className="h-5 w-5" />} parts={2} name="Pulpa de café" role="Da potasio y alimenta a los microbios" kg={r.pulp} />
+              <Ingredient icon={<Wheat className="h-5 w-5" />} parts={1} name="Cascarilla de arroz" role="Deja pasar el aire y quita el exceso de agua" kg={r.husk} />
+            </ul>
+            <p className="mt-2 text-[11px] text-earth-500">A la derecha: lo que tu finca produce de cada residuo.</p>
+
+            {r.missing.length > 0 && (
+              <div className="mt-4 rounded-xl bg-harvest-50 border border-harvest-200 p-3 flex gap-3">
+                <Bed className="h-5 w-5 text-harvest-600 flex-shrink-0" />
+                <div className="min-w-0 text-xs text-earth-700 leading-relaxed">
+                  <p className="font-semibold text-earth-800">Para que la pila quede equilibrada, agrega:</p>
+                  <ul className="mt-1 space-y-1">
+                    {r.missing.map(m => (
+                      <li key={m.name}>
+                        <strong>~{kgToWheelbarrows(m.kg).toLocaleString('es-PE')} carretillas</strong> más de {m.name}.
+                        {' '}Si no tienes, usa {m.substitute}.
+                      </li>
+                    ))}
+                  </ul>
                 </div>
               </div>
             )}
@@ -280,13 +278,13 @@ interface StepperProps {
 function Stepper({ icon, label, hint, value, step, onChange }: StepperProps) {
   const change = (delta: number) => onChange(Math.max(0, Math.round((value + delta) * 10) / 10));
   return (
-    <div className="rounded-xl border border-earth-200 p-3">
+    <div className="min-w-0 rounded-xl border border-earth-200 p-3">
       <div className="flex items-center gap-2 text-earth-700">
         {icon}
         <span className="text-sm font-semibold">{label}</span>
       </div>
       <div className="mt-2 flex items-center gap-2">
-        <button type="button" onClick={() => change(-step)} aria-label={`Restar ${label}`} className="flex h-10 w-10 items-center justify-center rounded-lg bg-earth-100 text-earth-700 hover:bg-earth-200">
+        <button type="button" onClick={() => change(-step)} aria-label={`Restar ${label}`} className="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-lg bg-earth-100 text-earth-700 hover:bg-earth-200">
           <Minus className="h-4 w-4" />
         </button>
         <input
@@ -297,9 +295,9 @@ function Stepper({ icon, label, hint, value, step, onChange }: StepperProps) {
           value={value}
           onChange={e => onChange(Math.max(0, Number(e.target.value) || 0))}
           aria-label={`${label} (${hint})`}
-          className="input-field h-10 flex-1 text-center text-lg font-bold"
+          className="input-field h-10 w-0 min-w-0 flex-1 px-1 text-center text-lg font-bold"
         />
-        <button type="button" onClick={() => change(step)} aria-label={`Sumar ${label}`} className="flex h-10 w-10 items-center justify-center rounded-lg bg-earth-100 text-earth-700 hover:bg-earth-200">
+        <button type="button" onClick={() => change(step)} aria-label={`Sumar ${label}`} className="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-lg bg-grove-600 text-white hover:bg-grove-700">
           <Plus className="h-4 w-4" />
         </button>
       </div>
@@ -310,15 +308,17 @@ function Stepper({ icon, label, hint, value, step, onChange }: StepperProps) {
 
 function Ingredient({ icon, parts, name, role, kg }: { icon: React.ReactNode; parts: number; name: string; role: string; kg: number }) {
   return (
-    <li className="flex items-center gap-3 rounded-xl border border-earth-200 p-3">
-      <div className="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-lg bg-earth-100 text-earth-700">{icon}</div>
-      <div className="flex-1 min-w-0">
-        <p className="text-sm font-semibold text-earth-800">{parts} carretilla{parts > 1 ? 's' : ''} de {name.toLowerCase()}</p>
-        <p className="text-xs text-earth-500">{role}</p>
+    <li className="flex flex-col gap-2 rounded-xl border border-earth-200 p-3 sm:flex-row sm:items-center sm:gap-3">
+      <div className="flex min-w-0 flex-1 items-center gap-3">
+        <div className="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-lg bg-earth-100 text-earth-700">{icon}</div>
+        <div className="min-w-0">
+          <p className="text-sm font-semibold text-earth-800 leading-snug">{parts} carretilla{parts > 1 ? 's' : ''} de {name.toLowerCase()}</p>
+          <p className="text-xs text-earth-500 leading-snug">{role}</p>
+        </div>
       </div>
-      <div className="text-right flex-shrink-0">
-        <p className="text-sm font-bold text-earth-800">{kgToSacks(kg)} sacos</p>
-        <p className="text-[11px] text-earth-500">~{kgToWheelbarrows(kg)} carretillas</p>
+      <div className="flex items-baseline justify-between gap-2 border-t border-earth-100 pt-2 sm:block sm:border-0 sm:pt-0 sm:text-right sm:flex-shrink-0">
+        <p className="text-sm font-bold text-earth-800">{kgToSacks(kg).toLocaleString('es-PE')} sacos</p>
+        <p className="text-[11px] text-earth-500">~{kgToWheelbarrows(kg).toLocaleString('es-PE')} carretillas</p>
       </div>
     </li>
   );
