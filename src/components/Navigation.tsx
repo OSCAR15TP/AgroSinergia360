@@ -1,7 +1,7 @@
 import type { Page } from '@/types';
 import type { LocalUser } from '@/hooks/useAuth';
 import { useI18n } from '@/lib/i18n';
-import { LayoutDashboard, Coffee, Wheat, Beef, Tractor, Sparkles, TrendingUp, Leaf, Settings, BookOpenText } from 'lucide-react';
+import { LayoutDashboard, Coffee, Wheat, Beef, Tractor, Sparkles, TrendingUp, Leaf, Settings, BookOpenText, Recycle } from 'lucide-react';
 import { UserProfile } from '@/components/UserProfile';
 
 interface NavItem {
@@ -20,6 +20,7 @@ const NAV_ITEMS: NavItem[] = [
   { id: 'livestock', labelKey: 'nav.livestock', shortKey: 'nav.livestock', icon: Beef, color: 'text-earth-500 dark:text-earth-400', activeColor: 'text-clay-700 bg-clay-100 dark:text-clay-300 dark:bg-clay-800/50' },
   { id: 'economics', labelKey: 'nav.economics', shortKey: 'nav.economics', icon: TrendingUp, color: 'text-earth-500 dark:text-earth-400', activeColor: 'text-grove-700 bg-grove-100 dark:text-grove-300 dark:bg-grove-800/50' },
   { id: 'carbon', labelKey: 'nav.carbon', shortKey: 'nav.carbon', icon: Leaf, color: 'text-earth-500 dark:text-earth-400', activeColor: 'text-grove-700 bg-grove-100 dark:text-grove-300 dark:bg-grove-800/50' },
+  { id: 'biomass', labelKey: 'nav.biomass', shortKey: 'nav.biomass', icon: Recycle, color: 'text-earth-500 dark:text-earth-400', activeColor: 'text-grove-700 bg-grove-100 dark:text-grove-300 dark:bg-grove-800/50' },
   { id: 'myfarm', labelKey: 'nav.myfarm', shortKey: 'nav.myfarm', icon: Tractor, color: 'text-earth-500 dark:text-earth-400', activeColor: 'text-grove-700 bg-grove-100 dark:text-grove-300 dark:bg-grove-800/50' },
   { id: 'assistant', labelKey: 'nav.assistant', shortKey: 'nav.assistant', icon: Sparkles, color: 'text-earth-500 dark:text-earth-400', activeColor: 'text-grove-700 bg-grove-100 dark:text-grove-300 dark:bg-grove-800/50' },
   { id: 'docs', labelKey: 'nav.docs', shortKey: 'nav.docs', icon: BookOpenText, color: 'text-earth-500 dark:text-earth-400', activeColor: 'text-grove-700 bg-grove-100 dark:text-grove-300 dark:bg-grove-800/50' },

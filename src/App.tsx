@@ -14,6 +14,7 @@ import { AssistantPage } from '@/pages/AssistantPage';
 import { LoginPage } from '@/pages/LoginPage';
 import { EconomicsPage } from '@/pages/EconomicsPage';
 import { CarbonPage } from '@/pages/CarbonPage';
+import { BiomassPage } from '@/pages/BiomassPage';
 import { SettingsPage } from '@/pages/SettingsPage';
 import { DocsPage } from '@/pages/DocsPage';
 import { UserProfile } from '@/components/UserProfile';
@@ -105,6 +106,8 @@ function AppContent() {
             )}
 
             {page === 'assistant' && <AssistantPage data={data} />}
+
+            {page === 'biomass' && <BiomassPage data={data} />}
 
             {page === 'docs' && <DocsPage />}
 
