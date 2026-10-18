@@ -1,4 +1,5 @@
 import type { AppData } from '@/types';
+import { findRelevantSections, type GuideSection, type LocalGuide } from '@/lib/localGuides';
 
 export interface ChatMessage {
   id: string;
@@ -647,15 +648,135 @@ Un suelo con 3% materia orgánica en 1 hectárea almacena ~60 toneladas de CO2. 
 
 Usa el módulo de **Huella CO₂** para registrar tus emisiones y ver el balance de tu finca.`,
   },
+  {
+    topic: 'punto de equilibrio',
+    keywords: ['punto de equilibrio', 'equilibrio', 'costo fijo', 'costos fijos', 'costo variable', 'costos variables', 'cuanto debo vender', 'cuánto debo vender'],
+    generate: () => `**Costos y Punto de Equilibrio**
+
+**Tipos de costos:**
+- **Fijos:** no cambian con la producción (arriendo, depreciación de equipos, salarios permanentes)
+- **Variables:** dependen de lo que produces (semilla, fertilizante, jornales de cosecha, transporte)
+
+**Fórmula del punto de equilibrio:**
+Unidades = Costos fijos ÷ (Precio de venta − Costo variable por unidad)
+
+**Ejemplo:** Costos fijos de 10.000.000, precio del kg de café 12.000 y costo variable 7.000 por kg → 10.000.000 ÷ 5.000 = **2.000 kg** para no perder.
+
+**Recomendaciones:**
+1. Calcula el costo por kilo de cada cultivo, no solo el total de la finca
+2. Si el precio de mercado está por debajo de tu costo variable, cada kilo vendido genera pérdida
+3. Reduce costos variables con compost propio y control biológico
+
+Registra tus costos en el módulo de **Economía** para calcularlo con tus datos reales.`,
+  },
+  {
+    topic: 'credito financiamiento',
+    keywords: ['credito', 'crédito', 'prestamo', 'préstamo', 'financiamiento', 'financiar', 'banco', 'interes', 'interés', 'deuda'],
+    generate: () => `**Crédito y Financiamiento Agrícola**
+
+**Cuándo conviene endeudarse:**
+- Para inversiones que generan ingresos: riego, renovación de cafetales, mejora genética, maquinaria
+- No para cubrir gastos corrientes recurrentes
+
+**Antes de firmar:**
+1. Compara la **tasa efectiva anual**, no solo la mensual
+2. Pide un **periodo de gracia** que coincida con el tiempo hasta la primera cosecha
+3. Ajusta las cuotas al calendario de cosecha (pagos semestrales o al vender)
+4. Las cuotas no deberían superar el **30-40% del flujo de caja** esperado
+
+**Fuentes habituales:** bancos agrarios públicos, cooperativas, fondos de garantía y líneas de fomento con tasas subsidiadas para pequeños productores.`,
+  },
+  {
+    topic: 'inflacion tipo de cambio',
+    keywords: ['inflacion', 'inflación', 'dolar', 'dólar', 'tipo de cambio', 'devaluacion', 'devaluación', 'precios suben', 'economia del pais', 'economía del país'],
+    generate: () => `**Inflación, Tipo de Cambio y tu Finca**
+
+**Cómo te afecta:**
+- La **inflación** encarece insumos, combustible y mano de obra
+- Una **devaluación** sube el costo de fertilizantes y agroquímicos importados
+- Pero también **favorece a quien exporta**: el precio del café se fija en dólares
+
+**Estrategias de protección:**
+1. Compra insumos con anticipación cuando los precios estén estables
+2. Produce tu propio abono (compost, biol) para depender menos de importados
+3. Diversifica: café para exportación + arroz y ganadería para mercado local
+4. Revisa tus precios de venta con frecuencia y negocia contratos con ajuste
+
+La economía circular de tu finca es también una **protección contra la inflación**.`,
+  },
+  {
+    topic: 'comercializacion mercado',
+    keywords: ['comercializacion', 'comercialización', 'mercado', 'vender', 'venta', 'intermediario', 'cooperativa', 'exportar', 'exportacion', 'exportación', 'certificacion', 'certificación'],
+    generate: () => `**Comercialización y Mercados**
+
+**Para obtener mejor precio:**
+1. **Vende en grupo:** cooperativas y asociaciones negocian volúmenes mayores y reducen intermediarios
+2. **Agrega valor:** café especial, tostado propio, arroz empacado con marca local
+3. **Certificaciones:** orgánico, comercio justo o Rainforest pagan primas sobre el precio base
+4. **Registra precios mensuales** para identificar la mejor época de venta
+
+**Canales posibles:**
+- Venta directa a consumidores y mercados campesinos
+- Tiendas y restaurantes locales
+- Exportadores de cafés especiales
+- Compras públicas (programas de alimentación escolar)
+
+Una buena calidad en la poscosecha es lo que más influye en el precio final.`,
+  },
+  {
+    topic: 'flujo de caja riesgo',
+    keywords: ['flujo de caja', 'presupuesto', 'ahorro', 'ahorrar', 'liquidez', 'seguro', 'seguro agricola', 'seguro agrícola', 'riesgo', 'subsidio', 'subsidios', 'economia', 'economía', 'finanzas', 'dinero'],
+    generate: () => `**Finanzas de la Finca: Flujo de Caja y Riesgo**
+
+**Flujo de caja:**
+La agricultura tiene ingresos estacionales. Un presupuesto mensual con entradas y salidas te permite anticipar los meses sin cosecha.
+
+**Buenas prácticas:**
+1. Separa las cuentas de la finca de los gastos del hogar
+2. Mantén un **fondo de reserva** equivalente a 3 meses de gastos operativos
+3. Registra cada ingreso y gasto en el módulo de **Economía**
+
+**Gestión del riesgo:**
+- **Diversificación:** café, arroz y ganadería compensan caídas de precio o clima
+- **Seguros agrícolas:** cubren pérdidas por sequía, inundación o heladas
+- **Programas de apoyo:** consulta subsidios y líneas de fomento con tu cooperativa o entidad agraria
+
+¿Quieres que profundice en costos, crédito, precios o inflación?`,
+  },
 ];
 
 const fallbackResponses: string[] = [
   `Hola, soy el asistente agronómico de AgroSinergia 360. Puedo ayudarte con temas de **café, arroz, ganadería, suelos, riego, plagas, fertilización, economía circular y manejo integrado**.\n\nPregúntame cosas como:\n- "¿Cómo controlo la roya?"\n- "¿Qué pH necesita el café?"\n- "¿Cómo funciona la rotación SIPAS?"\n- "¿Cuándo vacunar mi ganado?"\n- "¿Cómo hacer compost?"\n- "¿Cómo conservar el suelo?"`,
   `Puedo ayudarte con información agronómica sobre café, arroz y ganadería. Intenta preguntarme sobre plagas, fertilización, riego, pastoreo, compostaje, conservación de suelos o rentabilidad. También puedo darte recomendaciones basadas en los datos que has registrado en la app.`,
-  `No tengo información específica sobre eso, pero puedo ayudarte con:\n\n• **Café:** Roya, minador, antracnosis, ojo de gallo, broca, pH, fertilización, variedades, sombra\n• **Arroz:** SIPAS, riego, arroz rojo, humedad, nutrición, zinc\n• **Ganadería:** Pastoreo rotacional, vacunación, reproducción, peso, estrés térmico\n• **General:** Compost, clima, MIPE, planificación, conservación de suelos, huella de carbono, rentabilidad\n\n¿Sobre cuál de estos temas te gustaría saber más?`,
+  `No tengo información específica sobre eso, pero puedo ayudarte con:\n\n• **Café:** Roya, minador, antracnosis, ojo de gallo, broca, pH, fertilización, variedades, sombra\n• **Arroz:** SIPAS, riego, arroz rojo, humedad, nutrición, zinc\n• **Ganadería:** Pastoreo rotacional, vacunación, reproducción, peso, estrés térmico\n• **General:** Compost, clima, MIPE, planificación, conservación de suelos, huella de carbono\n• **Economía:** Rentabilidad, costos, punto de equilibrio, crédito, inflación, comercialización, flujo de caja y seguros\n\n¿Sobre cuál de estos temas te gustaría saber más?`,
 ];
 
-export function generateResponse(query: string, data: AppData): string {
+function renderGuideSections(guide: LocalGuide, sections: GuideSection[]): string {
+  const body = sections.map((s) => `**${s.title}:** ${s.content}`).join('\n\n');
+  return `**Según tu guía activa "${guide.title}":**\n\n${body}`;
+}
+
+export function generateResponse(query: string, data: AppData, guide?: LocalGuide | null): string {
+  const base = generateBaseResponse(query, data);
+  if (!guide || !query.trim()) return base.text;
+
+  const sections = findRelevantSections(guide, query);
+  if (sections.length > 0) {
+    const guidePart = renderGuideSections(guide, sections);
+    return base.matched ? `${guidePart}\n\n---\n\n${base.text}` : guidePart;
+  }
+
+  const topics = guide.sections.map((s) => s.title).join(', ');
+  const note = `*Guía activa: **${guide.title}**. Puedes preguntarme sobre: ${topics}.*`;
+  return `${base.text}\n\n${note}`;
+}
+
+function generateBaseResponse(query: string, data: AppData): { text: string; matched: boolean } {
+  const text = generateRuleResponse(query, data);
+  return { text, matched: !fallbackResponses.includes(text) };
+}
+
+function generateRuleResponse(query: string, data: AppData): string {
   const lower = query.toLowerCase().trim();
 
   if (!lower) return fallbackResponses[0];

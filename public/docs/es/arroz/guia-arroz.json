@@ -1,0 +1,33 @@
+{
+  "id": "arroz",
+  "module": "arroz",
+  "title": "Guía de Arroz",
+  "summary": "Sistema SIPAS, riego por fases, arroz rojo, fertilización y manejo del lote.",
+  "sections": [
+    {
+      "title": "Sistema SIPAS",
+      "keywords": ["sipas", "rotacion", "pastura", "brachiaria", "ciclo"],
+      "content": "Un año de arroz seguido de 2-3 años de pastura (Brachiaria) con pastoreo. Reduce hasta 70% el uso de herbicidas, rompe el ciclo de malezas, mejora la estructura del suelo y genera ingresos extra por ganadería durante la fase de pastura."
+    },
+    {
+      "title": "Riego por fases",
+      "keywords": ["riego", "agua", "lamina", "inundacion", "humedad", "drenar"],
+      "content": "Germinación (0-15 días): suelo húmedo sin inundar. Macollamiento (15-45): lámina de 5-10 cm. Embuche (45-70): 10-15 cm. Floración (70-90): lámina constante de 10 cm, etapa crítica. Drenar 15 días antes de cosecha. El riego intermitente ahorra 20-30% de agua."
+    },
+    {
+      "title": "Arroz rojo y malezas",
+      "keywords": ["arroz rojo", "maleza", "malezas", "herbicida", "semilla certificada"],
+      "content": "Usar semilla certificada, preparar el suelo con falsa siembra y rotar con pastura. El pastoreo en fase SIPAS agota el banco de semillas de arroz rojo en 2-3 años."
+    },
+    {
+      "title": "Fertilización y zinc",
+      "keywords": ["fertilizacion", "nitrogeno", "urea", "zinc", "potasio", "nutricion", "abono"],
+      "content": "Referencia: N 100-150 kg/ha fraccionado en 3 aplicaciones (siembra, macollamiento, primordio floral). Zinc 5-10 kg/ha de sulfato de zinc si hay hojas con bandas cloróticas. Aplicar 2-3 t/ha de compost antes de la siembra."
+    },
+    {
+      "title": "Rendimiento y cosecha",
+      "keywords": ["rendimiento", "cosecha", "toneladas", "humedad grano", "paddy"],
+      "content": "Rendimiento esperado: 4-8 t/ha de paddy con buen riego y manejo. Cosechar con 20-24% de humedad del grano y secar hasta 13-14% para almacenamiento. La paja se incorpora o se usa en compost; no quemar."
+    }
+  ]
+}

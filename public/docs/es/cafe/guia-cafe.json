@@ -1,0 +1,38 @@
+{
+  "id": "cafe",
+  "module": "cafe",
+  "title": "Guía de Café",
+  "summary": "Manejo integrado del cafetal: enfermedades, suelo, fertilización, sombra y cosecha.",
+  "sections": [
+    {
+      "title": "Roya del cafeto",
+      "keywords": ["roya", "hemileia", "hongo", "hoja amarilla", "polvo naranja", "defoliacion"],
+      "content": "Polvo amarillo-naranja en el envés de la hoja. Se favorece con lluvias y temperaturas de 18-24 °C. Umbral de acción: 5% de hojas afectadas. Control preventivo con fungicidas cúpricos cada 30-45 días en época lluviosa, poda sanitaria y nutrición con potasio (>0,3 cmol/kg). Variedades resistentes: Castillo, Colombia, Catimor, Cenicafé 1."
+    },
+    {
+      "title": "Broca y minador",
+      "keywords": ["broca", "minador", "plaga", "insecto", "fruto perforado", "beauveria"],
+      "content": "Broca: trampas con alcohol metílico-etílico (1:1), Beauveria bassiana y cosecha sanitaria recogiendo frutos caídos. Minador: control biológico con parasitoides; intervenir químicamente solo si más del 30% de hojas están afectadas, aplicando al atardecer para proteger polinizadores."
+    },
+    {
+      "title": "Suelo y pH",
+      "keywords": ["ph", "suelo", "acidez", "cal", "encalado", "materia organica", "aluminio"],
+      "content": "pH óptimo entre 5,0 y 6,5. Con pH menor a 5 hay toxicidad de aluminio: aplicar cal dolomita según análisis (normalmente 1-2 t/ha). Mantener materia orgánica por encima de 3% con 2-3 kg de compost por planta al año."
+    },
+    {
+      "title": "Fertilización",
+      "keywords": ["fertilizacion", "fertilizante", "abono", "nitrogeno", "fosforo", "potasio", "npk", "nutricion"],
+      "content": "Referencia anual por planta: N 80-120 g, P2O5 30-50 g, K2O 80-120 g. Fraccionar en 3-4 aplicaciones durante las lluvias. Ajustar siempre con análisis de suelo; el compost propio puede reemplazar parte del fertilizante químico."
+    },
+    {
+      "title": "Sombra y variedades",
+      "keywords": ["sombra", "variedad", "variedades", "guamo", "eritrina", "altitud", "caturra", "geisha"],
+      "content": "Sombra ideal 30-40% con leguminosas (guamo, eritrina). El exceso favorece roya y ojo de gallo. Variedades de calidad: Caturra, Borbón, Geisha (1200-1800 m). Robusta para zonas de 0-800 m."
+    },
+    {
+      "title": "Cosecha y poscosecha",
+      "keywords": ["cosecha", "beneficio", "secado", "fermentacion", "calidad", "pergamino", "taza"],
+      "content": "Recolectar solo frutos maduros. Despulpar el mismo día, fermentar 12-18 horas y secar hasta 10-12% de humedad. La pulpa se composta y regresa al cafetal. Un buen beneficio mejora la calidad en taza y el precio de venta."
+    }
+  ]
+}

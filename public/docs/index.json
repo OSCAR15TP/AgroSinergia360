@@ -33,6 +33,14 @@
       "description": "Compostaje, estiércol, residuos, carbono y aprovechamiento de subproductos.",
       "path": "/docs/es/circular/guia-circular.json",
       "type": "json"
+    },
+    {
+      "id": "economia",
+      "module": "economia",
+      "title": "Economía Agrícola",
+      "description": "Costos, punto de equilibrio, precios, crédito, inflación, comercialización y riesgo.",
+      "path": "/docs/es/economia/guia-economia.json",
+      "type": "json"
     }
   ]
 }

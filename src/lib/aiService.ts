@@ -2,25 +2,7 @@ import type { AppData } from '@/types';
 import { generateResponse as localGenerate } from '@/lib/agronomistAI';
 import type { ChatMessage } from '@/lib/agronomistAI';
 
-function getLocalGuideContext(): string | null {
-  if (typeof window === 'undefined') return null;
-
-  try {
-    const raw = window.localStorage.getItem('agro360_local_guide_context');
-    if (!raw) return null;
-
-    const parsed = JSON.parse(raw) as { title?: string; module?: string; content?: string };
-    if (parsed.content) {
-      const title = parsed.title ? `Guía local activa: ${parsed.title}` : 'Guía local activa';
-      const module = parsed.module ? `Módulo: ${parsed.module}` : '';
-      return [title, module, parsed.content].filter(Boolean).join('\n\n');
-    }
-
-    return raw;
-  } catch {
-    return null;
-  }
-}
+import { getActiveGuide, guideToText } from '@/lib/localGuides';
 
 function buildFarmContext(data: AppData, localGuideContext?: string | null): string {
   const parts: string[] = [];
@@ -63,7 +45,7 @@ function buildFarmContext(data: AppData, localGuideContext?: string | null): str
 
   if (localGuideContext) {
     parts.push('');
-    parts.push('CONTEXTO LOCAL DE GUÍA:');
+    parts.push('CONTEXTO LOCAL DE GUÍA (el usuario la activó: úsala como fuente prioritaria y menciónala en tu respuesta):');
     parts.push(localGuideContext);
   }
 
@@ -77,7 +59,8 @@ export async function getAIResponse(
   language: 'es' | 'en' | 'pt' = 'es'
 ): Promise<{ text: string; source: 'groq' | 'local' }> {
   const groqApiKey = data.farmConfig.groqApiKey;
-  const localGuideContext = getLocalGuideContext();
+  const activeGuide = getActiveGuide();
+  const localGuideContext = activeGuide ? guideToText(activeGuide) : null;
   const farmContext = buildFarmContext(data, localGuideContext);
 
   try {
@@ -117,7 +100,7 @@ export async function getAIResponse(
 
     return { text: result.reply, source: 'groq' };
   } catch (err) {
-    const localResponse = localGenerate(message, data);
+    const localResponse = localGenerate(message, data, activeGuide);
     const errorMsg = err instanceof Error ? err.message : 'Error desconocido';
     const prefixed = groqApiKey
       ? `*(IA local — sin conexión a Groq: ${errorMsg})*\n\n${localResponse}`
