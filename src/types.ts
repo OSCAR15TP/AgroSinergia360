@@ -1,4 +1,6 @@
-export type Page = 'dashboard' | 'coffee' | 'rice' | 'livestock' | 'myfarm' | 'assistant' | 'economics' | 'carbon' | 'settings';
+import type { AppData } from '@/types';
+
+export type Page = 'dashboard' | 'coffee' | 'rice' | 'livestock' | 'myfarm' | 'assistant' | 'docs' | 'economics' | 'carbon' | 'settings';
 
 export interface CoffeeDiagnosis {
   id: string;
@@ -138,4 +140,19 @@ export interface CarbonRecord {
   electricityKwh: number;
   shadeTrees: number;
   notes: string;
+}
+
+export interface LocalGuideMeta {
+  id: string;
+  module: 'cafe' | 'arroz' | 'ganaderia' | 'circular';
+  title: string;
+  description: string;
+  path: string;
+  type: 'json';
+}
+
+export interface LocalGuideContext {
+  title: string;
+  module: string;
+  content: string;
 }
