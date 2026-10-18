@@ -1,0 +1,38 @@
+{
+  "version": 1,
+  "language": "es",
+  "guides": [
+    {
+      "id": "cafe",
+      "module": "cafe",
+      "title": "Guía de Café",
+      "description": "Roya, pH, fertilización, sombra, plagas y manejo integrado del cafetal.",
+      "path": "/docs/es/cafe/guia-cafe.json",
+      "type": "json"
+    },
+    {
+      "id": "arroz",
+      "module": "arroz",
+      "title": "Guía de Arroz",
+      "description": "SIPAS, humedad, rotación, arroz rojo, fertilización y manejo del lote.",
+      "path": "/docs/es/arroz/guia-arroz.json",
+      "type": "json"
+    },
+    {
+      "id": "ganaderia",
+      "module": "ganaderia",
+      "title": "Guía de Ganadería",
+      "description": "Salud, vacunación, parasitismo, manejo reproductivo y bienestar animal.",
+      "path": "/docs/es/ganaderia/guia-ganaderia.json",
+      "type": "json"
+    },
+    {
+      "id": "circular",
+      "module": "circular",
+      "title": "Economía Circular",
+      "description": "Compostaje, estiércol, residuos, carbono y aprovechamiento de subproductos.",
+      "path": "/docs/es/circular/guia-circular.json",
+      "type": "json"
+    }
+  ]
+}
