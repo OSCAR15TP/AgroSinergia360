@@ -15,6 +15,7 @@ const es: Dict = {
   'nav.carbon': 'Huella CO₂',
   'nav.myfarm': 'Mi Finca',
   'nav.assistant': 'Asistente IA',
+  'nav.docs': 'Guías',
   'nav.settings': 'Configuración',
 
   // Dashboard
@@ -142,6 +143,7 @@ const en: Dict = {
   'nav.carbon': 'Carbon Footprint',
   'nav.myfarm': 'My Farm',
   'nav.assistant': 'AI Assistant',
+  'nav.docs': 'Guides',
   'nav.settings': 'Settings',
 
   'dash.welcome': 'Welcome to',
@@ -265,6 +267,7 @@ const pt: Dict = {
   'nav.carbon': 'Pegada CO₂',
   'nav.myfarm': 'Minha Fazenda',
   'nav.assistant': 'Assistente IA',
+  'nav.docs': 'Guias',
   'nav.settings': 'Configurações',
 
   'dash.welcome': 'Bem-vindo a',

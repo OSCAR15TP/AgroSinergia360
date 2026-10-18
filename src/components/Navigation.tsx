@@ -1,7 +1,7 @@
 import type { Page } from '@/types';
 import type { LocalUser } from '@/hooks/useAuth';
 import { useI18n } from '@/lib/i18n';
-import { LayoutDashboard, Coffee, Wheat, Beef, Tractor, Sparkles, TrendingUp, Leaf, Settings } from 'lucide-react';
+import { LayoutDashboard, Coffee, Wheat, Beef, Tractor, Sparkles, TrendingUp, Leaf, Settings, BookOpenText } from 'lucide-react';
 import { UserProfile } from '@/components/UserProfile';
 
 interface NavItem {
@@ -22,6 +22,7 @@ const NAV_ITEMS: NavItem[] = [
   { id: 'carbon', labelKey: 'nav.carbon', shortKey: 'nav.carbon', icon: Leaf, color: 'text-earth-500 dark:text-earth-400', activeColor: 'text-grove-700 bg-grove-100 dark:text-grove-300 dark:bg-grove-800/50' },
   { id: 'myfarm', labelKey: 'nav.myfarm', shortKey: 'nav.myfarm', icon: Tractor, color: 'text-earth-500 dark:text-earth-400', activeColor: 'text-grove-700 bg-grove-100 dark:text-grove-300 dark:bg-grove-800/50' },
   { id: 'assistant', labelKey: 'nav.assistant', shortKey: 'nav.assistant', icon: Sparkles, color: 'text-earth-500 dark:text-earth-400', activeColor: 'text-grove-700 bg-grove-100 dark:text-grove-300 dark:bg-grove-800/50' },
+  { id: 'docs', labelKey: 'nav.docs', shortKey: 'nav.docs', icon: BookOpenText, color: 'text-earth-500 dark:text-earth-400', activeColor: 'text-grove-700 bg-grove-100 dark:text-grove-300 dark:bg-grove-800/50' },
   { id: 'settings', labelKey: 'nav.settings', shortKey: 'nav.settings', icon: Settings, color: 'text-earth-500 dark:text-earth-400', activeColor: 'text-grove-700 bg-grove-100 dark:text-grove-300 dark:bg-grove-800/50' },
 ];
 
@@ -90,7 +91,7 @@ export function BottomNav({ current, onNavigate }: BottomNavProps) {
   const { t } = useI18n();
   return (
     <nav className="md:hidden fixed bottom-0 left-0 right-0 z-30 bg-white border-t border-earth-200/60 safe-bottom dark:bg-earth-800 dark:border-earth-700/40 transition-colors duration-300">
-      <div className="flex items-center justify-around px-1 py-1.5">
+      <div className="flex items-center justify-between gap-1 overflow-x-auto px-1 py-1.5">
         {NAV_ITEMS.map((item) => {
           const Icon = item.icon;
           const active = current === item.id;
@@ -130,6 +131,7 @@ export function MobileHeader({ current, farmName, user, onNavigate }: MobileHead
     carbon: t('nav.carbon'),
     myfarm: t('nav.myfarm'),
     assistant: t('nav.assistant'),
+    docs: t('nav.docs'),
     settings: t('nav.settings'),
   };
   return (

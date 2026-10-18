@@ -15,6 +15,7 @@ import { LoginPage } from '@/pages/LoginPage';
 import { EconomicsPage } from '@/pages/EconomicsPage';
 import { CarbonPage } from '@/pages/CarbonPage';
 import { SettingsPage } from '@/pages/SettingsPage';
+import { DocsPage } from '@/pages/DocsPage';
 import { UserProfile } from '@/components/UserProfile';
 import { ErrorBoundary } from '@/components/ErrorBoundary';
 import { Sparkles, Loader2 } from 'lucide-react';
@@ -104,6 +105,8 @@ function AppContent() {
             )}
 
             {page === 'assistant' && <AssistantPage data={data} />}
+
+            {page === 'docs' && <DocsPage />}
 
             {page === 'settings' && (
               <SettingsPage user={user} onNavigate={handleNavigate} />

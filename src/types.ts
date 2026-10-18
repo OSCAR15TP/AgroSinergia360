@@ -1,5 +1,3 @@
-import type { AppData } from '@/types';
-
 export type Page = 'dashboard' | 'coffee' | 'rice' | 'livestock' | 'myfarm' | 'assistant' | 'docs' | 'economics' | 'carbon' | 'settings';
 
 export interface CoffeeDiagnosis {
