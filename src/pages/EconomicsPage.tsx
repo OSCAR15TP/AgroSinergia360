@@ -75,7 +75,7 @@ export function EconomicsPage({ data, update }: EconomicsPageProps) {
       </div>
 
       <div className="relative h-40 overflow-hidden rounded-3xl shadow-sm sm:h-48">
-        <img src={resolveDocPath('/docs/es/economia/image.png')} alt="Paisaje agrícola" className="h-full w-full object-cover" />
+        <img src={resolveDocPath('/docs/es/economia/image copy 2.png')} alt="Crecimiento económico agrícola" className="h-full w-full object-cover" />
         <div className="absolute inset-0 bg-gradient-to-r from-black/65 via-black/20 to-transparent" />
         <p className="absolute bottom-4 left-4 text-lg font-bold text-white drop-shadow-sm">Decisiones con visión de negocio</p>
       </div>
