@@ -8,7 +8,7 @@ import { useState } from 'react';
 import {
   Settings as SettingsIcon, Globe, Ruler, Thermometer,
   Bell, Sun, Moon, Monitor, LogOut, Trash2,
-  Languages, Clock, Info, Recycle, AlertCircle,
+  Languages, Clock, Info, Recycle, AlertCircle, KeyRound, ExternalLink,
 } from 'lucide-react';
 
 interface SettingsPageProps {
@@ -51,6 +51,16 @@ export function SettingsPage({ user, onNavigate }: SettingsPageProps) {
           </div>
         </div>
       </div>
+
+      <SettingsSection icon={<KeyRound className="h-4 w-4" />} title="Conexión de AgroIA">
+        <div className="px-4 py-4">
+          <p className="text-sm font-semibold text-earth-800 dark:text-earth-100">Clave de Groq protegida</p>
+          <p className="mt-1 text-xs leading-relaxed text-earth-500 dark:text-earth-400">AgroIA usa una conexión interna segura. La clave no se guarda en este dispositivo ni se muestra en la aplicación.</p>
+          <a href="https://console.groq.com/keys" target="_blank" rel="noreferrer" className="btn-secondary mt-3 inline-flex text-xs">
+            Obtener o administrar clave en Groq <ExternalLink className="h-3.5 w-3.5" />
+          </a>
+        </div>
+      </SettingsSection>
 
       {/* Language */}
       <SettingsSection icon={<Globe className="h-4 w-4" />} title={t('settings.language')}>
