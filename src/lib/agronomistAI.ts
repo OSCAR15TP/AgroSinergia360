@@ -1,5 +1,5 @@
 import type { AppData } from '@/types';
-import { findRelevantSections, type LocalGuide } from '@/lib/localGuides';
+import { findRelevantSections, resolveDocPath, type LocalGuide } from '@/lib/localGuides';
 
 export type AiArea = 'cafe' | 'arroz' | 'ganaderia';
 
@@ -13,9 +13,9 @@ export interface ChatMessage {
 }
 
 export const AI_AREAS: Array<{ id: AiArea; label: string; description: string; image: string }> = [
-  { id: 'cafe', label: 'Café', description: 'Hojas, frutos, suelo y manejo del cafetal', image: 'https://images.pexels.com/photos/7761601/pexels-photo-7761601.jpeg?auto=compress&cs=tinysrgb&h=650&w=940' },
-  { id: 'arroz', label: 'Arroz', description: 'Desarrollo, agua, nutrición y problemas del lote', image: 'https://images.pexels.com/photos/19239403/pexels-photo-19239403.jpeg?auto=compress&cs=tinysrgb&h=650&w=940' },
-  { id: 'ganaderia', label: 'Ganadería', description: 'Alimentación, manejo y observación del ganado', image: 'https://images.pexels.com/photos/28962577/pexels-photo-28962577.jpeg?auto=compress&cs=tinysrgb&h=650&w=940' },
+  { id: 'cafe', label: 'Café', description: 'Hojas, frutos, suelo y manejo del cafetal', image: resolveDocPath('/docs/es/cafe/image.png') },
+  { id: 'arroz', label: 'Arroz', description: 'Desarrollo, agua, nutrición y problemas del lote', image: resolveDocPath('/docs/es/arroz/image.png') },
+  { id: 'ganaderia', label: 'Ganadería', description: 'Alimentación, manejo y observación del ganado', image: resolveDocPath('/docs/es/ganaderia/image.png') },
 ];
 
 const areaNames: Record<AiArea, string> = { cafe: 'café', arroz: 'arroz', ganaderia: 'ganadería bovina' };

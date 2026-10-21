@@ -3,6 +3,7 @@ import type { AppData, EconomicRecord } from '@/types';
 import { uid, formatDate, todayISO } from '@/hooks/useAppData';
 import { Badge, EmptyState } from '@/components/UI';
 import { Modal } from '@/components/Modal';
+import { resolveDocPath } from '@/lib/localGuides';
 import {
   TrendingUp, Plus, Trash2, DollarSign, Calculator,
   Coffee, Wheat, Beef, ArrowUpRight, ArrowDownRight, Scale, Target,
@@ -71,6 +72,12 @@ export function EconomicsPage({ data, update }: EconomicsPageProps) {
           <h1 className="text-xl font-bold text-earth-900">Análisis Económico</h1>
           <p className="text-sm text-earth-500">Rentabilidad, punto de equilibrio y márgenes por cosecha</p>
         </div>
+      </div>
+
+      <div className="relative h-40 overflow-hidden rounded-3xl shadow-sm sm:h-48">
+        <img src={resolveDocPath('/docs/es/economia/image.png')} alt="Paisaje agrícola" className="h-full w-full object-cover" />
+        <div className="absolute inset-0 bg-gradient-to-r from-black/65 via-black/20 to-transparent" />
+        <p className="absolute bottom-4 left-4 text-lg font-bold text-white drop-shadow-sm">Decisiones con visión de negocio</p>
       </div>
 
       {/* Summary cards */}

@@ -12,6 +12,7 @@ import {
 import { uid, formatDate, todayISO, daysUntil } from '@/hooks/useAppData';
 import { ImageDiagnosisModal } from '@/components/ImageDiagnosisModal';
 import { analyzeLivestockPhoto } from '@/lib/visualDiagnosis';
+import { resolveDocPath } from '@/lib/localGuides';
 
 interface LivestockModuleProps {
   data: AppData;
@@ -62,6 +63,12 @@ export function LivestockModule({ data, update }: LivestockModuleProps) {
             <Camera className="h-3.5 w-3.5" /> Diagnóstico por imagen
           </button>
         </div>
+      </div>
+
+      <div className="relative h-40 overflow-hidden rounded-3xl shadow-sm sm:h-48">
+        <img src={resolveDocPath('/docs/es/ganaderia/image.png')} alt="Ganado en pastoreo" className="h-full w-full object-cover" />
+        <div className="absolute inset-0 bg-gradient-to-r from-black/65 via-black/20 to-transparent" />
+        <p className="absolute bottom-4 left-4 text-lg font-bold text-white drop-shadow-sm">Bienestar y manejo del hato</p>
       </div>
 
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">

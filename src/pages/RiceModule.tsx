@@ -11,6 +11,7 @@ import {
 import { uid, formatDate, todayISO } from '@/hooks/useAppData';
 import { ImageDiagnosisModal } from '@/components/ImageDiagnosisModal';
 import { analyzeRicePhoto } from '@/lib/visualDiagnosis';
+import { resolveDocPath } from '@/lib/localGuides';
 
 interface RiceModuleProps {
   data: AppData;
@@ -52,6 +53,12 @@ export function RiceModule({ data, update }: RiceModuleProps) {
             <Camera className="h-3.5 w-3.5" /> Diagnóstico por imagen
           </button>
         </div>
+      </div>
+
+      <div className="relative h-40 overflow-hidden rounded-3xl shadow-sm sm:h-48">
+        <img src={resolveDocPath('/docs/es/arroz/image.png')} alt="Cultivo de arroz" className="h-full w-full object-cover" />
+        <div className="absolute inset-0 bg-gradient-to-r from-black/65 via-black/20 to-transparent" />
+        <p className="absolute bottom-4 left-4 text-lg font-bold text-white drop-shadow-sm">Manejo inteligente del cultivo</p>
       </div>
 
       {/* Stats */}

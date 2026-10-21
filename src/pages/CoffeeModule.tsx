@@ -10,6 +10,7 @@ import {
 } from 'lucide-react';
 import { DIAGNOSIS_INFO, RECOMMENDATION_INFO, generateRecommendation, analyzePhoto } from '@/lib/coffeeEngine';
 import { uid, formatDate, todayISO } from '@/hooks/useAppData';
+import { resolveDocPath } from '@/lib/localGuides';
 
 interface CoffeeModuleProps {
   data: AppData;
@@ -39,6 +40,12 @@ export function CoffeeModule({ data, update }: CoffeeModuleProps) {
           <h1 className="text-xl font-bold text-earth-900">Módulo Café</h1>
           <p className="text-sm text-earth-500">Diagnóstico por IA y asistente agronómico</p>
         </div>
+      </div>
+
+      <div className="relative h-40 overflow-hidden rounded-3xl shadow-sm sm:h-48">
+        <img src={resolveDocPath('/docs/es/cafe/image.png')} alt="Frutos de café" className="h-full w-full object-cover" />
+        <div className="absolute inset-0 bg-gradient-to-r from-black/65 via-black/20 to-transparent" />
+        <p className="absolute bottom-4 left-4 text-lg font-bold text-white drop-shadow-sm">Cuidado integral del cafetal</p>
       </div>
 
       {/* Stats */}
