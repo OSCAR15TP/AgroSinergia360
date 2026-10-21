@@ -101,6 +101,7 @@ function AppContent() {
                 onReset={resetData}
                 onExport={exportData}
                 onImport={importData}
+                onNavigate={handleNavigate}
               />
             )}
 

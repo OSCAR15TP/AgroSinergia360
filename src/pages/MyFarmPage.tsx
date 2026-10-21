@@ -1,11 +1,11 @@
 import { useState, useRef } from 'react';
-import type { AppData, FarmConfig } from '@/types';
+import type { AppData, FarmConfig, Page } from '@/types';
 import { Alert } from '@/components/Alert';
 import { Badge } from '@/components/UI';
 import { StatCard } from '@/components/StatCard';
 import {
   Tractor, Check, Wifi, WifiOff, Download, Upload, Trash2, Coffee, Wheat, Beef,
-  Info, MapPin, Maximize, Database, Shield, Cloud, CloudOff,
+  Info, MapPin, Maximize, Database, Shield, Cloud, CloudOff, Sparkles, ExternalLink, ArrowRight,
 } from 'lucide-react';
 import { formatDate } from '@/hooks/useAppData';
 import { useI18n } from '@/lib/i18n';
@@ -18,9 +18,10 @@ interface MyFarmProps {
   onReset: () => void;
   onExport: () => string;
   onImport: (json: string) => boolean;
+  onNavigate: (page: Page) => void;
 }
 
-export function MyFarmPage({ data, update, isOnline, cloudSynced, onReset, onExport, onImport }: MyFarmProps) {
+export function MyFarmPage({ data, update, isOnline, cloudSynced, onReset, onExport, onImport, onNavigate }: MyFarmProps) {
   const { t, lang } = useI18n();
   const [showResetConfirm, setShowResetConfirm] = useState(false);
   const [importStatus, setImportStatus] = useState<'idle' | 'success' | 'error'>('idle');
@@ -139,12 +140,29 @@ export function MyFarmPage({ data, update, isOnline, cloudSynced, onReset, onExp
         </div>
       </div>
 
-      <div className="card border-grove-200 bg-grove-50/60 p-5 dark:border-grove-800 dark:bg-grove-950/20">
-        <div className="flex items-start gap-3">
-          <Shield className="mt-0.5 h-5 w-5 flex-shrink-0 text-grove-600" />
+      <div className="card overflow-hidden border-grove-200 dark:border-grove-800">
+        <div className="flex items-start gap-3 border-b border-grove-100 bg-grove-50/60 p-5 dark:border-grove-800 dark:bg-grove-950/20">
+          <div className="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-xl bg-grove-600 text-white shadow-sm">
+            <Sparkles className="h-5 w-5" />
+          </div>
           <div>
-            <h3 className="text-sm font-bold text-earth-800 dark:text-earth-100">Conexión de IA protegida</h3>
-            <p className="mt-1 text-xs leading-relaxed text-earth-600 dark:text-earth-300">La clave de Groq no se guarda en este dispositivo ni se sincroniza con tus datos. Cuando la conexión está habilitada, la aplicación la usa únicamente desde el servidor.</p>
+            <h3 className="text-sm font-bold text-earth-800 dark:text-earth-100">Configuración de IA (Groq)</h3>
+            <p className="mt-1 text-xs leading-relaxed text-earth-600 dark:text-earth-300">Potencia AgroIA con respuestas avanzadas. La clave se mantiene protegida en el servidor y no se guarda en este dispositivo.</p>
+          </div>
+        </div>
+        <div className="space-y-3 p-5">
+          <div className="flex items-center gap-2 text-sm font-semibold text-grove-700 dark:text-grove-300">
+            <span className="h-2.5 w-2.5 rounded-full bg-grove-500" />
+            Conexión segura disponible para el asistente
+          </div>
+          <p className="text-xs leading-relaxed text-earth-500 dark:text-earth-400">AgroIA usa la guía técnica del área seleccionada y tus datos de finca para darte una orientación más útil. Si Groq no responde, la biblioteca local continúa disponible.</p>
+          <div className="flex flex-wrap gap-2">
+            <button onClick={() => onNavigate('assistant')} className="btn-primary text-sm">
+              <Sparkles className="h-4 w-4" /> Abrir AgroIA <ArrowRight className="h-4 w-4" />
+            </button>
+            <a href="https://console.groq.com/keys" target="_blank" rel="noreferrer" className="btn-secondary text-sm">
+              <ExternalLink className="h-4 w-4" /> Administrar clave en Groq
+            </a>
           </div>
         </div>
       </div>
