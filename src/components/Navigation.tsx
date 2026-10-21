@@ -130,6 +130,7 @@ export function MobileHeader({ current, farmName, user, onNavigate }: MobileHead
     livestock: t('nav.livestock'),
     economics: t('nav.economics'),
     carbon: t('nav.carbon'),
+    biomass: t('nav.biomass'),
     myfarm: t('nav.myfarm'),
     assistant: t('nav.assistant'),
     docs: t('nav.docs'),

@@ -1,110 +1,52 @@
 import type { AppData } from '@/types';
-import { generateResponse as localGenerate } from '@/lib/agronomistAI';
-import type { ChatMessage } from '@/lib/agronomistAI';
+import { generateResponse, type AiArea, type ChatMessage } from '@/lib/agronomistAI';
+import { guideToText, type LocalGuide } from '@/lib/localGuides';
 
-import { getActiveGuide, guideToText } from '@/lib/localGuides';
-
-function buildFarmContext(data: AppData, localGuideContext?: string | null): string {
+function buildFarmContext(data: AppData): string {
   const parts: string[] = [];
-
-  parts.push(`Finca: ${data.farmConfig.farmName}`);
+  if (data.farmConfig.farmName) parts.push(`Finca: ${data.farmConfig.farmName}`);
   if (data.farmConfig.location) parts.push(`Ubicación: ${data.farmConfig.location}`);
   if (data.farmConfig.size) parts.push(`Tamaño: ${data.farmConfig.size} ha`);
-
-  const modules: string[] = [];
-  if (data.farmConfig.modules.coffee) modules.push('Café');
-  if (data.farmConfig.modules.rice) modules.push('Arroz');
-  if (data.farmConfig.modules.livestock) modules.push('Ganadería');
-  if (modules.length) parts.push(`Módulos activos: ${modules.join(', ')}`);
-
-  if (data.coffeeDiagnoses.length > 0) {
+  if (data.coffeeDiagnoses.length) {
     const last = data.coffeeDiagnoses[0];
-    parts.push(`Último diagnóstico de café: ${last.result} (${Math.round(last.confidence * 100)}% confianza) — pH: ${last.soilParams.ph}, P: ${last.soilParams.phosphorus} ppm, K: ${last.soilParams.potassium} cmol/kg`);
-    parts.push(`Total diagnósticos de café: ${data.coffeeDiagnoses.length}`);
+    parts.push(`Último registro de café: ${last.result}; pH ${last.soilParams.ph}; fósforo ${last.soilParams.phosphorus} ppm; potasio ${last.soilParams.potassium} cmol/kg`);
   }
-
-  if (data.ricePlots.length > 0) {
-    parts.push(`Lotes de arroz: ${data.ricePlots.length}`);
-    for (const p of data.ricePlots) {
-      parts.push(`  - ${p.name}: ${p.area}ha, estado ${p.status}, humedad ${p.soilMoisture}%, fase rotación ${p.rotationPhase}`);
-    }
+  if (data.ricePlots.length) parts.push(`Lotes de arroz: ${data.ricePlots.length}. Humedad registrada: ${data.ricePlots.map((plot) => `${plot.name} ${plot.soilMoisture}%`).join(', ')}`);
+  if (data.cattle.length) {
+    const averageWeight = Math.round(data.cattle.reduce((sum, cattle) => sum + cattle.weight, 0) / data.cattle.length);
+    parts.push(`Ganado registrado: ${data.cattle.length} animales; peso promedio ${averageWeight} kg`);
   }
-
-  if (data.cattle.length > 0) {
-    const avgWeight = Math.round(data.cattle.reduce((s, c) => s + c.weight, 0) / data.cattle.length);
-    const healthy = data.cattle.filter(c => c.healthStatus === 'sano').length;
-    parts.push(`Hato ganadero: ${data.cattle.length} animales, peso promedio ${avgWeight} kg, ${healthy} sanos`);
-  }
-
-  if (data.paddocks.length > 0) {
-    parts.push(`Potreros: ${data.paddocks.length}`);
-    for (const p of data.paddocks) {
-      parts.push(`  - ${p.name}: ${p.area}ha, pasto ${p.grassHeight}cm, ${p.cattleCount} animales, estado ${p.status}`);
-    }
-  }
-
-  if (localGuideContext) {
-    parts.push('');
-    parts.push('CONTEXTO LOCAL DE GUÍA (el usuario la activó: úsala como fuente prioritaria y menciónala en tu respuesta):');
-    parts.push(localGuideContext);
-  }
-
-  return parts.join('\n');
+  return parts.join('\n') || 'No hay datos de finca registrados.';
 }
 
-export async function getAIResponse(
-  message: string,
-  history: ChatMessage[],
-  data: AppData,
-  language: 'es' | 'en' | 'pt' = 'es'
-): Promise<{ text: string; source: 'groq' | 'local' }> {
+export async function getAIResponse(message: string, history: ChatMessage[], data: AppData, language: 'es' | 'en' | 'pt' = 'es', area: AiArea = 'arroz', guide: LocalGuide | null = null): Promise<{ text: string; source: 'groq' | 'local'; sources: string[] }> {
   const groqApiKey = data.farmConfig.groqApiKey;
-  const activeGuide = getActiveGuide();
-  const localGuideContext = activeGuide ? guideToText(activeGuide) : null;
-  const farmContext = buildFarmContext(data, localGuideContext);
-
+  const sources = guide ? [guide.title] : [];
   try {
     const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
     const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY;
-
+    if (!supabaseUrl || !supabaseAnonKey) throw new Error('Conexión no disponible');
     const response = await fetch(`${supabaseUrl}/functions/v1/agro-ai`, {
       method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${supabaseAnonKey}`,
-        'apikey': supabaseAnonKey,
-      },
+      headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${supabaseAnonKey}`, apikey: supabaseAnonKey },
       body: JSON.stringify({
         message,
-        conversationHistory: history.slice(-10).map(m => ({ role: m.role, text: m.text })),
+        area,
+        conversationHistory: history.slice(-8).map((item) => ({ role: item.role, text: item.text })),
         groqApiKey: groqApiKey || undefined,
-        farmContext,
+        farmContext: buildFarmContext(data),
+        guideContext: guide ? guideToText(guide) : '',
+        guideTitle: guide?.title ?? '',
         language,
       }),
     });
-
-    if (!response.ok) {
-      const errData = await response.json().catch(() => ({ error: 'Error desconocido' }));
-      throw new Error(errData.error || `Error ${response.status}`);
-    }
-
-    const result = await response.json();
-
-    if (result.error) {
-      throw new Error(result.error);
-    }
-
-    if (!result.reply || typeof result.reply !== 'string') {
-      throw new Error('Respuesta inválida');
-    }
-
-    return { text: result.reply, source: 'groq' };
-  } catch (err) {
-    const localResponse = localGenerate(message, data, activeGuide);
-    const errorMsg = err instanceof Error ? err.message : 'Error desconocido';
-    const prefixed = groqApiKey
-      ? `*(IA local — sin conexión a Groq: ${errorMsg})*\n\n${localResponse}`
-      : localResponse;
-    return { text: prefixed, source: 'local' };
+    if (!response.ok) throw new Error('La IA conectada no pudo responder');
+    const result: unknown = await response.json();
+    if (!result || typeof result !== 'object' || !('reply' in result) || typeof result.reply !== 'string') throw new Error('Respuesta inválida');
+    return { text: result.reply, source: 'groq', sources };
+  } catch {
+    const localText = generateResponse(message, data, guide, area);
+    const notice = groqApiKey ? '*No pude conectar con la IA en línea. Te respondo con la biblioteca local.*\n\n' : '';
+    return { text: `${notice}${localText}`, source: 'local', sources };
   }
 }

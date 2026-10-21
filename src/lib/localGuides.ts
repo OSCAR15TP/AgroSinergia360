@@ -87,8 +87,10 @@ export function findRelevantSections(guide: LocalGuide, query: string, max = 2):
         if (q.includes(normalizeText(kw))) score += kw.includes(' ') ? 3 : 2;
       }
       const titleWords = normalizeText(section.title).split(/\s+/);
+      const contentWords = normalizeText(section.content).split(/[^a-z0-9]+/).filter((w) => w.length > 4);
       for (const w of queryWords) {
-        if (titleWords.some((t) => t.length > 3 && (t.startsWith(w) || w.startsWith(t)))) score += 1;
+        if (titleWords.some((t) => t.length > 3 && (t.startsWith(w) || w.startsWith(t)))) score += 2;
+        if (contentWords.some((contentWord) => contentWord.startsWith(w) || w.startsWith(contentWord))) score += 1;
       }
       return { section, score };
     })
