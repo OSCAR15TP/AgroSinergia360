@@ -23,7 +23,6 @@ function mapFarmConfig(row: any): FarmConfig {
       livestock: row.modules_livestock ?? true,
     },
     lastBackup: row.last_backup ? new Date(row.last_backup).toISOString() : null,
-    groqApiKey: row.groq_api_key ?? undefined,
   };
 }
 
@@ -184,7 +183,6 @@ export async function syncConfig(config: FarmConfig): Promise<void> {
     modules_coffee: config.modules.coffee,
     modules_rice: config.modules.rice,
     modules_livestock: config.modules.livestock,
-    groq_api_key: config.groqApiKey ?? null,
     last_backup: config.lastBackup,
     updated_at: new Date().toISOString(),
   };

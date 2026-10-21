@@ -17,7 +17,6 @@ interface RequestBody {
   farmContext?: unknown;
   guideContext?: unknown;
   guideTitle?: unknown;
-  groqApiKey?: unknown;
   language?: unknown;
   description?: unknown;
   imageDataUrl?: unknown;
@@ -32,11 +31,12 @@ Deno.serve(async (req: Request) => {
   try {
     const body = await req.json() as RequestBody;
     const message = typeof body.message === "string" ? body.message.trim() : "";
-    if (!message) return respond({ error: "Escribe una pregunta para continuar." }, 400);
+    const imageDataUrl = typeof body.imageDataUrl === "string" ? body.imageDataUrl : "";
+    if (!message && !imageDataUrl) return respond({ error: "Escribe una pregunta o adjunta una fotografía para continuar." }, 400);
     const area = body.area === "cafe" || body.area === "arroz" || body.area === "ganaderia" ? body.area : "arroz";
     const languageNames: Record<string, string> = { es: "español", en: "inglés", pt: "portugués" };
     const language = typeof body.language === "string" && body.language in languageNames ? body.language : "es";
-    const apiKey = typeof body.groqApiKey === "string" && body.groqApiKey.trim() ? body.groqApiKey.trim() : Deno.env.get("GROQ_API_KEY");
+    const apiKey = Deno.env.get("GROQ_API_KEY");
     if (!apiKey) return respond({ error: "No hay una clave de IA conectada. Puedes usar la biblioteca local." }, 400);
 
     type VisionContent = Array<{ type: "text"; text: string } | { type: "image_url"; image_url: { url: string } }>;
@@ -57,7 +57,6 @@ Deno.serve(async (req: Request) => {
       }
     }
 
-    const imageDataUrl = typeof body.imageDataUrl === "string" ? body.imageDataUrl : "";
     const hasImage = imageDataUrl.length > 0;
     if (hasImage) {
       if (imageDataUrl.length > 12000000 || !/^data:image\/(jpeg|png|webp);base64,/i.test(imageDataUrl)) return respond({ error: "La imagen debe ser JPG, PNG o WebP y pesar menos de 8 MB." }, 400);

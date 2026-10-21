@@ -24,7 +24,7 @@ import { Sparkles, Loader2 } from 'lucide-react';
 function AppContent() {
   const { user, loading } = useAuth();
   const [page, setPage] = useState<Page>('dashboard');
-  const { data, update, isOnline, resetData, exportData, importData, updateConfig } = useAppData();
+  const { data, update, isOnline, resetData, exportData, importData } = useAppData();
   const { settings } = useSettings();
 
   useEffect(() => {
@@ -96,7 +96,6 @@ function AppContent() {
               <MyFarmPage
                 data={data}
                 update={update}
-                updateConfig={updateConfig}
                 isOnline={isOnline}
                 cloudSynced={false}
                 onReset={resetData}

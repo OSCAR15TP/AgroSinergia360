@@ -86,7 +86,6 @@ export interface FarmConfig {
   size: number;
   modules: { coffee: boolean; rice: boolean; livestock: boolean };
   lastBackup: string | null;
-  groqApiKey?: string;
 }
 
 export interface AppData {

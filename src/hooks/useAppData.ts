@@ -82,11 +82,7 @@ export function useAppData() {
     }
   }, []);
 
-  const updateConfig = useCallback((config: FarmConfig) => {
-    setData(prev => ({ ...prev, farmConfig: config }));
-  }, []);
-
-  return { data, update, isOnline, resetData, exportData, importData, updateConfig };
+  return { data, update, isOnline, resetData, exportData, importData };
 }
 
 export function uid(): string {

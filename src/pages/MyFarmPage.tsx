@@ -5,7 +5,7 @@ import { Badge } from '@/components/UI';
 import { StatCard } from '@/components/StatCard';
 import {
   Tractor, Check, Wifi, WifiOff, Download, Upload, Trash2, Coffee, Wheat, Beef,
-  Info, MapPin, Maximize, Database, Shield, Sparkles, ExternalLink, Cloud, CloudOff,
+  Info, MapPin, Maximize, Database, Shield, Cloud, CloudOff,
 } from 'lucide-react';
 import { formatDate } from '@/hooks/useAppData';
 import { useI18n } from '@/lib/i18n';
@@ -13,7 +13,6 @@ import { useI18n } from '@/lib/i18n';
 interface MyFarmProps {
   data: AppData;
   update: (updater: (prev: AppData) => AppData) => void;
-  updateConfig: (config: FarmConfig) => void;
   isOnline: boolean;
   cloudSynced: boolean;
   onReset: () => void;
@@ -21,12 +20,10 @@ interface MyFarmProps {
   onImport: (json: string) => boolean;
 }
 
-export function MyFarmPage({ data, update, updateConfig, isOnline, cloudSynced, onReset, onExport, onImport }: MyFarmProps) {
+export function MyFarmPage({ data, update, isOnline, cloudSynced, onReset, onExport, onImport }: MyFarmProps) {
   const { t, lang } = useI18n();
   const [showResetConfirm, setShowResetConfirm] = useState(false);
   const [importStatus, setImportStatus] = useState<'idle' | 'success' | 'error'>('idle');
-  const [groqKey, setGroqKey] = useState(data.farmConfig.groqApiKey ?? '');
-  const [keySaved, setKeySaved] = useState(false);
   const fileRef = useRef<HTMLInputElement>(null);
 
   const handleExport = () => {
@@ -59,14 +56,6 @@ export function MyFarmPage({ data, update, updateConfig, isOnline, cloudSynced, 
         modules: { ...prev.farmConfig.modules, [key]: !prev.farmConfig.modules[key] },
       },
     }));
-  };
-
-  const saveGroqKey = () => {
-    const config = { ...data.farmConfig, groqApiKey: groqKey.trim() || undefined };
-    update(prev => ({ ...prev, farmConfig: config }));
-    updateConfig(config);
-    setKeySaved(true);
-    setTimeout(() => setKeySaved(false), 3000);
   };
 
   const totalRecords =
@@ -150,49 +139,13 @@ export function MyFarmPage({ data, update, updateConfig, isOnline, cloudSynced, 
         </div>
       </div>
 
-      {/* Groq API Key config */}
-      <div className="card p-5">
-        <div className="flex items-center gap-2 mb-1">
-          <Sparkles className="h-5 w-5 text-grove-600" />
-          <h3 className="text-sm font-bold text-earth-800 dark:text-earth-100">{t('farm.ai_settings')}</h3>
-        </div>
-        <p className="text-xs text-earth-500 mb-4">
-          {t('farm.ai_description')}
-        </p>
-        <div className="space-y-3">
+      <div className="card border-grove-200 bg-grove-50/60 p-5 dark:border-grove-800 dark:bg-grove-950/20">
+        <div className="flex items-start gap-3">
+          <Shield className="mt-0.5 h-5 w-5 flex-shrink-0 text-grove-600" />
           <div>
-            <label className="label">{t('farm.api_key')}</label>
-            <input
-              type="password"
-              value={groqKey}
-              onChange={(e) => setGroqKey(e.target.value)}
-              className="input"
-              placeholder="gsk_..."
-            />
+            <h3 className="text-sm font-bold text-earth-800 dark:text-earth-100">Conexión de IA protegida</h3>
+            <p className="mt-1 text-xs leading-relaxed text-earth-600 dark:text-earth-300">La clave de Groq no se guarda en este dispositivo ni se sincroniza con tus datos. Cuando la conexión está habilitada, la aplicación la usa únicamente desde el servidor.</p>
           </div>
-          <div className="flex items-center gap-2 flex-wrap">
-            <button onClick={saveGroqKey} className="btn-primary text-sm py-2">
-              <Check className="h-4 w-4" /> {t('farm.save_key')}
-            </button>
-            <a
-              href="https://console.groq.com/keys"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="btn-secondary text-sm py-2"
-            >
-              <ExternalLink className="h-3.5 w-3.5" /> {t('farm.get_key')}
-            </a>
-          </div>
-          {keySaved && (
-            <Alert type="success">
-              <span className="text-sm">{t('farm.key_saved')}</span>
-            </Alert>
-          )}
-          {data.farmConfig.groqApiKey && !keySaved && (
-            <div className="flex items-center gap-2 text-xs text-grove-600 font-medium">
-              <Check className="h-3.5 w-3.5" /> {t('farm.ai_enabled')}
-            </div>
-          )}
         </div>
       </div>
 
