@@ -13,6 +13,7 @@ import { useWeather } from '@/hooks/useWeather';
 import { getWeatherLabel } from '@/lib/weatherService';
 import { useState } from 'react';
 import { useI18n } from '@/lib/i18n';
+import { resolveDocPath } from '@/lib/localGuides';
 
 interface DashboardProps {
   data: AppData;
@@ -53,7 +54,7 @@ export function Dashboard({ data, onNavigate, isOnline, cloudSynced }: Dashboard
       count: data.coffeeDiagnoses.length,
       countLabel: lang === 'en' ? 'diagnoses' : lang === 'pt' ? 'diagnósticos' : 'diagnósticos',
       enabled: data.farmConfig.modules.coffee,
-      img: 'https://images.pexels.com/photos/31374541/pexels-photo-31374541.jpeg?auto=compress&cs=tinysrgb&h=650&w=940',
+      img: resolveDocPath('/docs/es/cafe/image.png'),
     },
     {
       page: 'rice' as Page,
@@ -66,7 +67,7 @@ export function Dashboard({ data, onNavigate, isOnline, cloudSynced }: Dashboard
       count: data.ricePlots.length,
       countLabel: lang === 'en' ? 'plots' : lang === 'pt' ? 'lotes' : 'lotes',
       enabled: data.farmConfig.modules.rice,
-      img: 'https://images.pexels.com/photos/2131921/pexels-photo-2131921.jpeg?auto=compress&cs=tinysrgb&h=650&w=940',
+      img: resolveDocPath('/docs/es/arroz/image~1png.png'),
     },
     {
       page: 'livestock' as Page,
@@ -79,7 +80,7 @@ export function Dashboard({ data, onNavigate, isOnline, cloudSynced }: Dashboard
       count: data.cattle.length,
       countLabel: lang === 'en' ? 'animals' : lang === 'pt' ? 'animais' : 'animales',
       enabled: data.farmConfig.modules.livestock,
-      img: 'https://images.pexels.com/photos/7164014/pexels-photo-7164014.jpeg?auto=compress&cs=tinysrgb&h=650&w=940',
+      img: resolveDocPath('/docs/es/ganaderia/image.png'),
     },
   ];
 
@@ -89,7 +90,7 @@ export function Dashboard({ data, onNavigate, isOnline, cloudSynced }: Dashboard
       <div className="relative overflow-hidden rounded-3xl bg-grove-800 text-white animate-slide-up">
         <div className="absolute inset-0 opacity-20">
           <img
-            src="https://images.pexels.com/photos/34732063/pexels-photo-34732063.jpeg?auto=compress&cs=tinysrgb&h=650&w=940"
+            src={resolveDocPath('/docs/es/arroz/image~1png.png')}
             alt="Farmland"
             className="h-full w-full object-cover"
           />
