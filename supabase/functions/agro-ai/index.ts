@@ -19,6 +19,8 @@ interface RequestBody {
   guideTitle?: unknown;
   groqApiKey?: unknown;
   language?: unknown;
+  description?: unknown;
+  imageDataUrl?: unknown;
 }
 
 function respond(body: Record<string, unknown>, status = 200): Response {
@@ -37,7 +39,8 @@ Deno.serve(async (req: Request) => {
     const apiKey = typeof body.groqApiKey === "string" && body.groqApiKey.trim() ? body.groqApiKey.trim() : Deno.env.get("GROQ_API_KEY");
     if (!apiKey) return respond({ error: "No hay una clave de IA conectada. Puedes usar la biblioteca local." }, 400);
 
-    const messages: Array<{ role: "system" | "user" | "assistant"; content: string }> = [{ role: "system", content: `${SYSTEM_PROMPT}\n\nResponde en ${languageNames[language]}. Área elegida: ${area}.` }];
+    type VisionContent = Array<{ type: "text"; text: string } | { type: "image_url"; image_url: { url: string } }>;
+    const messages: Array<{ role: "system" | "user" | "assistant"; content: string | VisionContent }> = [{ role: "system", content: `${SYSTEM_PROMPT}\n\nResponde en ${languageNames[language]}. Área elegida: ${area}.` }];
     if (typeof body.guideContext === "string" && body.guideContext.trim()) {
       const title = typeof body.guideTitle === "string" ? body.guideTitle : "ficha técnica local";
       messages.push({ role: "system", content: `Fuente disponible: ${title}.\n${body.guideContext}` });
@@ -53,13 +56,28 @@ Deno.serve(async (req: Request) => {
         if ((role === "user" || role === "assistant") && typeof text === "string") messages.push({ role, content: text.slice(0, 4000) });
       }
     }
-    messages.push({ role: "user", content: message.slice(0, 4000) });
+
+    const imageDataUrl = typeof body.imageDataUrl === "string" ? body.imageDataUrl : "";
+    const hasImage = imageDataUrl.length > 0;
+    if (hasImage) {
+      if (imageDataUrl.length > 12000000 || !/^data:image\/(jpeg|png|webp);base64,/i.test(imageDataUrl)) return respond({ error: "La imagen debe ser JPG, PNG o WebP y pesar menos de 8 MB." }, 400);
+      const description = typeof body.description === "string" ? body.description.trim().slice(0, 2000) : "";
+      messages.push({ role: "user", content: [
+        { type: "text", text: `Describe únicamente las señales visibles en esta fotografía del área de ${area}. ${description ? `La persona observa: ${description}` : "No hay una descripción adicional."} Explica qué datos faltan para comparar con la ficha técnica. No confirmes una enfermedad ni recomiendes productos o medicamentos basándote solo en la imagen.` },
+        { type: "image_url", image_url: { url: imageDataUrl } },
+      ] });
+    } else {
+      messages.push({ role: "user", content: message.slice(0, 4000) });
+    }
 
     const modelsResponse = await fetch("https://api.groq.com/openai/v1/models", { headers: { Authorization: `Bearer ${apiKey}` } });
     const modelsData = await modelsResponse.json().catch(() => ({ data: [] }));
     const availableModels = Array.isArray(modelsData.data) ? modelsData.data.map((model: { id?: unknown }) => typeof model.id === "string" ? model.id : "") : [];
     const preferredModels = ["openai/gpt-oss-120b", "llama-3.3-70b-versatile", "llama-3.1-8b-instant"];
-    const model = preferredModels.find((candidate) => availableModels.includes(candidate)) ?? availableModels.find((candidate) => !/(whisper|guard|orpheus|tts|safeguard)/i.test(candidate));
+    const visionModels = ["meta-llama/llama-4-scout-17b-16e-instruct", "meta-llama/llama-4-maverick-17b-128e-instruct", "llama-3.2-90b-vision-preview"];
+    const model = hasImage
+      ? visionModels.find((candidate) => availableModels.includes(candidate))
+      : preferredModels.find((candidate) => availableModels.includes(candidate)) ?? availableModels.find((candidate) => !/(whisper|guard|orpheus|tts|safeguard|vision)/i.test(candidate));
     if (!model) return respond({ error: "La clave de IA no tiene un modelo disponible." }, 502);
 
     const response = await fetch("https://api.groq.com/openai/v1/chat/completions", {

@@ -50,3 +50,25 @@ export async function getAIResponse(message: string, history: ChatMessage[], dat
     return { text: `${notice}${localText}`, source: 'local', sources };
   }
 }
+
+export async function getAIImageResponse(description: string, imageDataUrl: string, data: AppData, area: AiArea, guide: LocalGuide | null): Promise<{ text: string; source: 'groq' | 'local'; sources: string[] }> {
+  const groqApiKey = data.farmConfig.groqApiKey;
+  const sources = guide ? [guide.title] : [];
+  const localText = `**La fotografía no se puede analizar sin conexión.**\n\nPuedes conservar esta imagen en tu dispositivo y enviarla cuando recuperes Internet. Para una orientación local, describe qué observas: color y forma de las manchas, cuántas plantas o animales están afectados y desde cuándo comenzó.\n\n**Importante:** una fotografía no confirma por sí sola una enfermedad. No apliques productos ni medicamentos basándote únicamente en la imagen.\n\n${guide ? `**Ficha disponible:** ${guide.title}.` : '**Fuente:** no hay una ficha local disponible en este momento.'}`;
+  try {
+    const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
+    const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY;
+    if (!supabaseUrl || !supabaseAnonKey) throw new Error('Conexión no disponible');
+    const response = await fetch(`${supabaseUrl}/functions/v1/agro-ai`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${supabaseAnonKey}`, apikey: supabaseAnonKey },
+      body: JSON.stringify({ imageDataUrl, description, area, groqApiKey: groqApiKey || undefined, farmContext: buildFarmContext(data), guideContext: guide ? guideToText(guide) : '', guideTitle: guide?.title ?? '', language: 'es' }),
+    });
+    if (!response.ok) throw new Error('La IA visual no pudo responder');
+    const result: unknown = await response.json();
+    if (!result || typeof result !== 'object' || !('reply' in result) || typeof result.reply !== 'string') throw new Error('Respuesta inválida');
+    return { text: result.reply, source: 'groq', sources };
+  } catch {
+    return { text: groqApiKey ? `*No pude conectar con el análisis visual. La imagen no se ha guardado.*\n\n${localText}` : localText, source: 'local', sources };
+  }
+}
