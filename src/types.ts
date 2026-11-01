@@ -1,4 +1,4 @@
-export type Page = 'dashboard' | 'coffee' | 'rice' | 'myfarm' | 'assistant' | 'docs' | 'economics' | 'carbon' | 'biomass' | 'settings';
+export type Page = 'dashboard' | 'coffee' | 'rice' | 'cacao' | 'myfarm' | 'assistant' | 'docs' | 'economics' | 'carbon' | 'biomass' | 'settings';
 
 export interface CoffeeDiagnosis {
   id: string;
@@ -36,6 +36,26 @@ export interface RicePlot {
 
 export type PlotStatus = 'produccion' | 'rotacion' | 'pastura' | 'preparacion';
 
+export interface CacaoLot {
+  id: string;
+  name: string;
+  area: number;
+  trees: number;
+  variety: string;
+  plantingYear: number | null;
+  notes: string;
+}
+
+export interface CacaoHarvest {
+  id: string;
+  lotId: string;
+  date: string;
+  pods: number;
+  wetKg: number;
+  dryKg: number;
+  notes: string;
+}
+
 export interface ClimateData {
   temperature: number;
   humidity: number;
@@ -51,7 +71,7 @@ export interface FarmConfig {
   farmName: string;
   location: string;
   size: number;
-  modules: { coffee: boolean; rice: boolean };
+  modules: { coffee: boolean; rice: boolean; cacao: boolean };
   lastBackup: string | null;
 }
 
@@ -59,6 +79,8 @@ export interface AppData {
   farmConfig: FarmConfig;
   coffeeDiagnoses: CoffeeDiagnosis[];
   ricePlots: RicePlot[];
+  cacaoLots: CacaoLot[];
+  cacaoHarvests: CacaoHarvest[];
   events: FarmEvent[];
   economicRecords: EconomicRecord[];
   carbonRecords: CarbonRecord[];

@@ -18,6 +18,7 @@ function mapFarmConfig(row: any): FarmConfig {
     modules: {
       coffee: row.modules_coffee ?? true,
       rice: row.modules_rice ?? true,
+      cacao: true,
     },
     lastBackup: row.last_backup ? new Date(row.last_backup).toISOString() : null,
   };
@@ -124,11 +125,13 @@ export async function loadCloudData(): Promise<AppData | null> {
     return {
       farmConfig: configs.data ? mapFarmConfig(configs.data) : {
         farmName: 'Mi Finca', location: '', size: 0,
-        modules: { coffee: true, rice: true },
+        modules: { coffee: true, rice: true, cacao: true },
         lastBackup: null,
       },
       coffeeDiagnoses: (coffee.data ?? []).map(mapCoffeeDiag),
       ricePlots: (rice.data ?? []).map(mapRicePlot),
+      cacaoLots: [],
+      cacaoHarvests: [],
       events: (events.data ?? []).map(mapEvent),
       economicRecords: (economic.data ?? []).map(mapEconomic),
       carbonRecords: (carbon.data ?? []).map(mapCarbon),

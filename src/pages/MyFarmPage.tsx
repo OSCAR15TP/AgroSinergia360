@@ -4,7 +4,7 @@ import { Alert } from '@/components/Alert';
 import { Badge } from '@/components/UI';
 import { StatCard } from '@/components/StatCard';
 import {
-  Tractor, Check, Wifi, WifiOff, Download, Upload, Trash2, Coffee, Wheat,
+  Tractor, Check, Wifi, WifiOff, Download, Upload, Trash2, Coffee, Wheat, Sprout,
   Info, MapPin, Maximize, Database, Shield, Cloud, CloudOff, Sparkles, ExternalLink, ArrowRight,
 } from 'lucide-react';
 import { formatDate } from '@/hooks/useAppData';
@@ -49,7 +49,7 @@ export function MyFarmPage({ data, update, isOnline, cloudSynced, onReset, onExp
     reader.readAsText(file);
   };
 
-  const toggleModule = (key: 'coffee' | 'rice') => {
+  const toggleModule = (key: 'coffee' | 'rice' | 'cacao') => {
     update(prev => ({
       ...prev,
       farmConfig: {
@@ -188,6 +188,14 @@ export function MyFarmPage({ data, update, isOnline, cloudSynced, onReset, onExp
             enabled={data.farmConfig.modules.rice}
             onToggle={() => toggleModule('rice')}
           />
+          <ModuleToggle
+            icon={<Sprout className="h-5 w-5" />}
+            title="Cacao"
+            desc="Lotes, árboles y registro de cosechas"
+            color="earth"
+            enabled={data.farmConfig.modules.cacao}
+            onToggle={() => toggleModule('cacao')}
+          />
         </div>
       </div>
 
@@ -197,6 +205,7 @@ export function MyFarmPage({ data, update, isOnline, cloudSynced, onReset, onExp
         <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
           <StatCard icon={<Coffee className="h-5 w-5" />} label="Diagnósticos" value={data.coffeeDiagnoses.length} color="harvest" />
           <StatCard icon={<Wheat className="h-5 w-5" />} label="Lotes Arroz" value={data.ricePlots.length} color="sky" />
+          <StatCard icon={<Sprout className="h-5 w-5" />} label="Lotes Cacao" value={data.cacaoLots.length} color="grove" />
           <StatCard icon={<Database className="h-5 w-5" />} label="Total Registros" value={totalRecords} color="grove" />
         </div>
       </div>
@@ -292,7 +301,7 @@ function ModuleToggle({ icon, title, desc, color, enabled, onToggle }: {
   icon: React.ReactNode;
   title: string;
   desc: string;
-  color: 'harvest' | 'sky' | 'clay';
+  color: 'harvest' | 'sky' | 'clay' | 'earth';
   enabled: boolean;
   onToggle: () => void;
 }) {
@@ -300,6 +309,7 @@ function ModuleToggle({ icon, title, desc, color, enabled, onToggle }: {
     harvest: { bg: 'bg-harvest-100', text: 'text-harvest-600', active: 'bg-harvest-500' },
     sky: { bg: 'bg-sky-100', text: 'text-sky-600', active: 'bg-sky-500' },
     clay: { bg: 'bg-clay-100', text: 'text-clay-600', active: 'bg-clay-500' },
+    earth: { bg: 'bg-earth-200', text: 'text-earth-700', active: 'bg-earth-700' },
   };
   const c = colorMap[color];
   return (

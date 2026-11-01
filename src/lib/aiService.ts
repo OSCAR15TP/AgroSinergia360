@@ -11,6 +11,10 @@ function buildFarmContext(data: AppData): string {
     const last = data.coffeeDiagnoses[0];
     parts.push(`Último registro de café: ${last.result}; pH ${last.soilParams.ph}; fósforo ${last.soilParams.phosphorus} ppm; potasio ${last.soilParams.potassium} cmol/kg`);
   }
+  if (data.cacaoLots.length) {
+    const kgDry = data.cacaoHarvests.reduce((sum, h) => sum + h.dryKg, 0);
+    parts.push(`Lotes de cacao: ${data.cacaoLots.length}. Cosechas registradas: ${data.cacaoHarvests.length}; cacao seco acumulado ${kgDry} kg`);
+  }
   if (data.ricePlots.length) parts.push(`Lotes de arroz: ${data.ricePlots.length}. Humedad registrada: ${data.ricePlots.map((plot) => `${plot.name} ${plot.soilMoisture}%`).join(', ')}`);
   return parts.join('\n') || 'No hay datos de finca registrados.';
 }

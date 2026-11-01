@@ -8,6 +8,7 @@ import { Sidebar, BottomNav, MobileHeader } from '@/components/Navigation';
 import { Dashboard } from '@/pages/Dashboard';
 import { CoffeeModule } from '@/pages/CoffeeModule';
 import { RiceModule } from '@/pages/RiceModule';
+import { CacaoModule } from '@/pages/CacaoModule';
 import { MyFarmPage } from '@/pages/MyFarmPage';
 import { AssistantPage } from '@/pages/AssistantPage';
 import { LoginPage } from '@/pages/LoginPage';
@@ -79,6 +80,10 @@ function AppContent() {
               <RiceModule data={data} update={update} />
             )}
 
+            {page === 'cacao' && data.farmConfig.modules.cacao && (
+              <CacaoModule data={data} update={update} />
+            )}
+
             {page === 'economics' && (
               <EconomicsPage data={data} update={update} />
             )}
@@ -112,7 +117,8 @@ function AppContent() {
 
             {/* Fallback for disabled modules */
               ((page === 'coffee' && !data.farmConfig.modules.coffee) ||
-               (page === 'rice' && !data.farmConfig.modules.rice)) && (
+               (page === 'rice' && !data.farmConfig.modules.rice) ||
+               (page === 'cacao' && !data.farmConfig.modules.cacao)) && (
                 <div className="text-center py-20">
                   <p className="text-sm text-earth-500 dark:text-earth-300">Este módulo está desactivado. Actívalo desde Mi Finca.</p>
                   <button onClick={() => handleNavigate('myfarm')} className="btn-primary mt-4">

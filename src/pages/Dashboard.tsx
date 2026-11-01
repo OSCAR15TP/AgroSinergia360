@@ -67,6 +67,19 @@ export function Dashboard({ data, onNavigate, isOnline, cloudSynced }: Dashboard
       enabled: data.farmConfig.modules.rice,
       img: resolveDocPath('/docs/es/arroz/image~1png.png'),
     },
+    {
+      page: 'cacao' as Page,
+      icon: Sprout,
+      title: 'Cacao',
+      desc: lang === 'en' ? 'Cocoa lots, tree counts, and harvest records.' : lang === 'pt' ? 'Lotes de cacau, contagem de árvores e registros de colheita.' : 'Lotes de cacao, conteo de árboles y registro de cosechas.',
+      color: 'bg-earth-700',
+      bg: 'bg-earth-100',
+      text: 'text-earth-700',
+      count: data.cacaoLots.length,
+      countLabel: lang === 'en' ? 'lots' : lang === 'pt' ? 'lotes' : 'lotes',
+      enabled: data.farmConfig.modules.cacao,
+      img: 'https://images.pexels.com/photos/7450070/pexels-photo-7450070.jpeg?auto=compress&cs=tinysrgb&h=650&w=940',
+    },
   ];
 
   return (
