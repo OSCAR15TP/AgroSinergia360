@@ -1,7 +1,7 @@
 import type { Page } from '@/types';
-import type { LocalUser } from '@/hooks/useAuth';
+import type { AppUser } from '@/hooks/useAuth';
 import { useI18n } from '@/lib/i18n';
-import { LayoutDashboard, Coffee, Wheat, Sprout, Tractor, Sparkles, TrendingUp, Leaf, Settings, BookOpenText, Recycle } from 'lucide-react';
+import { LayoutDashboard, Coffee, Wheat, Sprout, Tractor, Sparkles, TrendingUp, Leaf, Settings, BookOpenText, Recycle, Store, Package } from 'lucide-react';
 import { UserProfile } from '@/components/UserProfile';
 
 interface NavItem {
@@ -21,6 +21,8 @@ const NAV_ITEMS: NavItem[] = [
   { id: 'economics', labelKey: 'nav.economics', shortKey: 'nav.economics', icon: TrendingUp, color: 'text-earth-500 dark:text-earth-400', activeColor: 'text-grove-700 bg-grove-100 dark:text-grove-300 dark:bg-grove-800/50' },
   { id: 'carbon', labelKey: 'nav.carbon', shortKey: 'nav.carbon', icon: Leaf, color: 'text-earth-500 dark:text-earth-400', activeColor: 'text-grove-700 bg-grove-100 dark:text-grove-300 dark:bg-grove-800/50' },
   { id: 'biomass', labelKey: 'nav.biomass', shortKey: 'nav.biomass', icon: Recycle, color: 'text-earth-500 dark:text-earth-400', activeColor: 'text-grove-700 bg-grove-100 dark:text-grove-300 dark:bg-grove-800/50' },
+  { id: 'store', labelKey: 'nav.store', shortKey: 'nav.store', icon: Store, color: 'text-earth-500 dark:text-earth-400', activeColor: 'text-grove-700 bg-grove-100 dark:text-grove-300 dark:bg-grove-800/50' },
+  { id: 'mystore', labelKey: 'nav.mystore', shortKey: 'nav.mystore', icon: Package, color: 'text-earth-500 dark:text-earth-400', activeColor: 'text-harvest-700 bg-harvest-100 dark:text-harvest-300 dark:bg-harvest-800/50' },
   { id: 'myfarm', labelKey: 'nav.myfarm', shortKey: 'nav.myfarm', icon: Tractor, color: 'text-earth-500 dark:text-earth-400', activeColor: 'text-grove-700 bg-grove-100 dark:text-grove-300 dark:bg-grove-800/50' },
   { id: 'assistant', labelKey: 'nav.assistant', shortKey: 'nav.assistant', icon: Sparkles, color: 'text-earth-500 dark:text-earth-400', activeColor: 'text-grove-700 bg-grove-100 dark:text-grove-300 dark:bg-grove-800/50' },
   { id: 'docs', labelKey: 'nav.docs', shortKey: 'nav.docs', icon: BookOpenText, color: 'text-earth-500 dark:text-earth-400', activeColor: 'text-grove-700 bg-grove-100 dark:text-grove-300 dark:bg-grove-800/50' },
@@ -31,7 +33,7 @@ interface SidebarProps {
   current: Page;
   onNavigate: (page: Page) => void;
   farmName: string;
-  user: LocalUser;
+  user: AppUser;
 }
 
 export function Sidebar({ current, onNavigate, farmName, user }: SidebarProps) {
@@ -117,7 +119,7 @@ export function BottomNav({ current, onNavigate }: BottomNavProps) {
 interface MobileHeaderProps {
   current: Page;
   farmName: string;
-  user: LocalUser;
+  user: AppUser;
   onNavigate: (page: Page) => void;
 }
 
@@ -128,6 +130,8 @@ export function MobileHeader({ current, farmName, user, onNavigate }: MobileHead
     coffee: t('nav.coffee'),
     rice: t('nav.rice'),
     cacao: t('nav.cacao'),
+    store: t('nav.store'),
+    mystore: t('nav.mystore'),
     economics: t('nav.economics'),
     carbon: t('nav.carbon'),
     biomass: t('nav.biomass'),

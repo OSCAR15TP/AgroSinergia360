@@ -1,11 +1,11 @@
 import { useState, useRef, useEffect } from 'react';
-import type { LocalUser } from '@/hooks/useAuth';
+import type { AppUser } from '@/hooks/useAuth';
 import type { Page } from '@/types';
 import { useAuth } from '@/hooks/useAuth';
 import { LogOut, ChevronDown, Settings } from 'lucide-react';
 
 interface UserProfileProps {
-  user: LocalUser;
+  user: AppUser;
   compact?: boolean;
   onNavigate?: (page: Page) => void;
 }
@@ -26,7 +26,7 @@ export function UserProfile({ user, compact, onNavigate }: UserProfileProps) {
   }, []);
 
   const name = user.fullName;
-  const subtitle = `Cuenta local · ${new Date(user.createdAt).toLocaleDateString('es', { day: 'numeric', month: 'short', year: 'numeric' })}`;
+  const subtitle = user.email;
 
   const handleNavigate = (page: Page) => {
     setOpen(false);
@@ -91,7 +91,7 @@ export function UserProfile({ user, compact, onNavigate }: UserProfileProps) {
         </div>
         <div className="flex-1 min-w-0 text-left">
           <p className="text-sm font-bold text-earth-800 truncate">{name}</p>
-          <p className="text-xs text-earth-500 truncate">Cuenta local</p>
+          <p className="text-xs text-earth-500 truncate">{user.email}</p>
         </div>
         <ChevronDown className="h-4 w-4 text-earth-400 flex-shrink-0" />
       </button>

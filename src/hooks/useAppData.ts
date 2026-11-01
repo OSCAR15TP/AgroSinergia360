@@ -1,7 +1,12 @@
 import { useState, useEffect, useCallback } from 'react';
 import type { AppData, FarmConfig } from '@/types';
 
-const STORAGE_KEY = 'agro360_data_v1';
+const LEGACY_STORAGE_KEY = 'agro360_data_v1';
+const LEGACY_CLAIM_KEY = 'agro360_legacy_claimed';
+
+function storageKeyFor(userId: string): string {
+  return `${LEGACY_STORAGE_KEY}:${userId}`;
+}
 
 export const defaultFarmConfig: FarmConfig = {
   farmName: 'Mi Finca',
@@ -22,9 +27,16 @@ export const defaultData: AppData = {
   carbonRecords: [],
 };
 
-function loadLocal(): AppData {
+function loadLocal(userId: string): AppData {
   try {
-    const stored = localStorage.getItem(STORAGE_KEY);
+    let stored = localStorage.getItem(storageKeyFor(userId));
+    if (!stored && !localStorage.getItem(LEGACY_CLAIM_KEY)) {
+      const legacy = localStorage.getItem(LEGACY_STORAGE_KEY);
+      if (legacy) {
+        stored = legacy;
+        localStorage.setItem(LEGACY_CLAIM_KEY, userId);
+      }
+    }
     if (stored) {
       const parsed = JSON.parse(stored) as AppData;
       return { ...defaultData, ...parsed };
@@ -35,8 +47,8 @@ function loadLocal(): AppData {
   return defaultData;
 }
 
-export function useAppData() {
-  const [data, setData] = useState<AppData>(loadLocal);
+export function useAppData(userId: string) {
+  const [data, setData] = useState<AppData>(() => loadLocal(userId));
   const [isOnline, setIsOnline] = useState(
     typeof navigator !== 'undefined' ? navigator.onLine : true
   );
@@ -54,7 +66,7 @@ export function useAppData() {
 
   useEffect(() => {
     try {
-      localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
+      localStorage.setItem(storageKeyFor(userId), JSON.stringify(data));
     } catch {
       // storage full or unavailable
     }

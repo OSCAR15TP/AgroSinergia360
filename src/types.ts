@@ -1,4 +1,4 @@
-export type Page = 'dashboard' | 'coffee' | 'rice' | 'cacao' | 'myfarm' | 'assistant' | 'docs' | 'economics' | 'carbon' | 'biomass' | 'settings';
+export type Page = 'dashboard' | 'coffee' | 'rice' | 'cacao' | 'myfarm' | 'assistant' | 'docs' | 'economics' | 'carbon' | 'biomass' | 'store' | 'mystore' | 'settings';
 
 export interface CoffeeDiagnosis {
   id: string;

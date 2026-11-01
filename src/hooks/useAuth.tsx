@@ -1,141 +1,96 @@
 import { createContext, useContext, useEffect, useState, type ReactNode } from 'react';
+import type { User } from '@supabase/supabase-js';
+import { supabase } from '@/lib/supabaseClient';
 
-export interface LocalUser {
+export interface AppUser {
+  id: string;
+  email: string;
   firstName: string;
   lastName: string;
   fullName: string;
   createdAt: string;
 }
 
-interface StoredAccount {
-  firstName: string;
-  lastName: string;
-  passwordHash: string;
-  createdAt: string;
-}
-
 interface AuthContextValue {
-  user: LocalUser | null;
+  user: AppUser | null;
   loading: boolean;
-  signUp: (firstName: string, lastName: string, password: string) => { error: string | null };
-  signIn: (firstName: string, lastName: string, password: string) => { error: string | null };
-  signOut: () => void;
+  signUp: (firstName: string, lastName: string, email: string, password: string) => Promise<{ error: string | null }>;
+  signIn: (email: string, password: string) => Promise<{ error: string | null }>;
+  signOut: () => Promise<void>;
 }
 
 const AuthContext = createContext<AuthContextValue>({
   user: null,
   loading: true,
-  signUp: () => ({ error: null }),
-  signIn: () => ({ error: null }),
-  signOut: () => {},
+  signUp: async () => ({ error: null }),
+  signIn: async () => ({ error: null }),
+  signOut: async () => {},
 });
 
-const ACCOUNTS_KEY = 'agro360_accounts';
-const SESSION_KEY = 'agro360_session';
-
-async function hashPassword(password: string): Promise<string> {
-  const enc = new TextEncoder();
-  const data = enc.encode(password + '_agro360_salt');
-  const buf = await crypto.subtle.digest('SHA-256', data);
-  return Array.from(new Uint8Array(buf)).map(b => b.toString(16).padStart(2, '0')).join('');
+function toAppUser(user: User): AppUser {
+  const firstName = String(user.user_metadata?.first_name ?? '');
+  const lastName = String(user.user_metadata?.last_name ?? '');
+  return {
+    id: user.id,
+    email: user.email ?? '',
+    firstName,
+    lastName,
+    fullName: `${firstName} ${lastName}`.trim() || user.email || 'Usuario',
+    createdAt: user.created_at,
+  };
 }
 
-function loadAccounts(): StoredAccount[] {
-  try {
-    const raw = localStorage.getItem(ACCOUNTS_KEY);
-    return raw ? JSON.parse(raw) : [];
-  } catch {
-    return [];
-  }
-}
-
-function saveAccounts(accounts: StoredAccount[]) {
-  localStorage.setItem(ACCOUNTS_KEY, JSON.stringify(accounts));
-}
-
-function loadSession(): LocalUser | null {
-  try {
-    const raw = localStorage.getItem(SESSION_KEY);
-    return raw ? JSON.parse(raw) : null;
-  } catch {
-    return null;
-  }
+function translateAuthError(message: string): string {
+  const lower = message.toLowerCase();
+  if (lower.includes('invalid login credentials')) return 'Correo o contrasena incorrectos.';
+  if (lower.includes('already registered') || lower.includes('already been registered')) return 'Ya existe una cuenta con ese correo.';
+  if (lower.includes('password should be at least')) return 'La contrasena debe tener al menos 6 caracteres.';
+  if (lower.includes('invalid email')) return 'Ingresa un correo valido.';
+  if (lower.includes('rate limit') || lower.includes('too many')) return 'Demasiados intentos. Espera unos minutos.';
+  return 'No se pudo completar la operacion. Intenta de nuevo.';
 }
 
 export function AuthProvider({ children }: { children: ReactNode }) {
-  const [user, setUser] = useState<LocalUser | null>(null);
+  const [user, setUser] = useState<AppUser | null>(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    setUser(loadSession());
-    setLoading(false);
+    supabase.auth.getSession()
+      .then(({ data }) => setUser(data.session?.user ? toAppUser(data.session.user) : null))
+      .catch(() => setUser(null))
+      .finally(() => setLoading(false));
+
+    const { data: subscription } = supabase.auth.onAuthStateChange((_event, session) => {
+      (async () => {
+        setUser(session?.user ? toAppUser(session.user) : null);
+      })();
+    });
+    return () => subscription.subscription.unsubscribe();
   }, []);
 
-  const signUp = (firstName: string, lastName: string, password: string): { error: string | null } => {
-    const trimmedFirst = firstName.trim();
-    const trimmedLast = lastName.trim();
-    if (!trimmedFirst || !trimmedLast) return { error: 'Ingresa tu nombre y apellidos.' };
-    if (password.length < 4) return { error: 'La contrasena debe tener al menos 4 caracteres.' };
-
-    const accounts = loadAccounts();
-    const exists = accounts.find(a =>
-      a.firstName.toLowerCase() === trimmedFirst.toLowerCase() &&
-      a.lastName.toLowerCase() === trimmedLast.toLowerCase()
-    );
-    if (exists) return { error: 'Ya existe una cuenta con ese nombre y apellidos.' };
-
-    (async () => {
-      const passwordHash = await hashPassword(password);
-      const newAccount: StoredAccount = {
-        firstName: trimmedFirst,
-        lastName: trimmedLast,
-        passwordHash,
-        createdAt: new Date().toISOString(),
-      };
-      saveAccounts([...accounts, newAccount]);
-      const localUser: LocalUser = {
-        firstName: trimmedFirst,
-        lastName: trimmedLast,
-        fullName: `${trimmedFirst} ${trimmedLast}`,
-        createdAt: newAccount.createdAt,
-      };
-      localStorage.setItem(SESSION_KEY, JSON.stringify(localUser));
-      setUser(localUser);
-    })();
-    return { error: null };
-  };
-
-  const signIn = (firstName: string, lastName: string, password: string): { error: string | null } => {
+  const signUp = async (firstName: string, lastName: string, email: string, password: string) => {
     const trimmedFirst = firstName.trim();
     const trimmedLast = lastName.trim();
     if (!trimmedFirst || !trimmedLast) return { error: 'Ingresa tu nombre y apellidos.' };
 
-    const accounts = loadAccounts();
-    const account = accounts.find(a =>
-      a.firstName.toLowerCase() === trimmedFirst.toLowerCase() &&
-      a.lastName.toLowerCase() === trimmedLast.toLowerCase()
-    );
-    if (!account) return { error: 'No se encontro una cuenta con ese nombre. Registrate primero.' };
-
-    (async () => {
-      const passwordHash = await hashPassword(password);
-      if (passwordHash !== account.passwordHash) {
-        return;
-      }
-      const localUser: LocalUser = {
-        firstName: account.firstName,
-        lastName: account.lastName,
-        fullName: `${account.firstName} ${account.lastName}`,
-        createdAt: account.createdAt,
-      };
-      localStorage.setItem(SESSION_KEY, JSON.stringify(localUser));
-      setUser(localUser);
-    })();
+    const { data, error } = await supabase.auth.signUp({
+      email: email.trim(),
+      password,
+      options: { data: { first_name: trimmedFirst, last_name: trimmedLast } },
+    });
+    if (error) return { error: translateAuthError(error.message) };
+    if (!data.session) return { error: 'Tu cuenta se creo, pero necesita confirmacion. Pide al administrador que la active.' };
     return { error: null };
   };
 
-  const signOut = () => {
-    localStorage.removeItem(SESSION_KEY);
+  const signIn = async (email: string, password: string) => {
+    const { error } = await supabase.auth.signInWithPassword({ email: email.trim(), password });
+    if (error) return { error: translateAuthError(error.message) };
+    return { error: null };
+  };
+
+  const signOut = async () => {
+    await supabase.auth.signOut();
     setUser(null);
   };
 

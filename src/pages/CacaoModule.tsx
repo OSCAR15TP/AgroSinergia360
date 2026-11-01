@@ -3,6 +3,7 @@ import type { AppData, CacaoHarvest, CacaoLot } from '@/types';
 import { Modal } from '@/components/Modal';
 import { Alert } from '@/components/Alert';
 import { EmptyState } from '@/components/UI';
+import { TabButton } from '@/components/TabButton';
 import { StatCard } from '@/components/StatCard';
 import { Sprout, Plus, Trash2, Check, Map, Wheat, Package, Scale } from 'lucide-react';
 import { uid, formatDate, todayISO } from '@/hooks/useAppData';
@@ -66,20 +67,6 @@ export function CacaoModule({ data, update }: CacaoModuleProps) {
         onAdd={(harvest) => update(prev => ({ ...prev, cacaoHarvests: [harvest, ...prev.cacaoHarvests] }))}
       />
     </div>
-  );
-}
-
-function TabButton({ active, onClick, icon, children }: { active: boolean; onClick: () => void; icon: React.ReactNode; children: React.ReactNode }) {
-  return (
-    <button
-      onClick={onClick}
-      className={`flex-1 flex items-center justify-center gap-1.5 rounded-lg px-3 py-2 text-sm font-semibold transition-all ${
-        active ? 'bg-white text-earth-800 shadow-sm' : 'text-earth-500 hover:text-earth-700'
-      }`}
-    >
-      {icon}
-      {children}
-    </button>
   );
 }
 

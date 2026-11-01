@@ -1,12 +1,13 @@
 import { useState } from 'react';
 import { useAuth } from '@/hooks/useAuth';
-import { Sparkles, Leaf, Wheat, Sprout, Shield, WifiOff, Recycle, User as UserIcon, Lock, Loader2, AlertCircle, ArrowRight } from 'lucide-react';
+import { Sparkles, Leaf, Wheat, Sprout, Shield, WifiOff, Recycle, User as UserIcon, Mail, Lock, Loader2, AlertCircle } from 'lucide-react';
 
 export function LoginPage() {
   const { signIn, signUp } = useAuth();
   const [isSignUp, setIsSignUp] = useState(true);
   const [firstName, setFirstName] = useState('');
   const [lastName, setLastName] = useState('');
+  const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -17,8 +18,8 @@ export function LoginPage() {
     setError(null);
 
     const result = isSignUp
-      ? signUp(firstName, lastName, password)
-      : signIn(firstName, lastName, password);
+      ? await signUp(firstName, lastName, email, password)
+      : await signIn(email, password);
 
     if (result.error) {
       setError(result.error);
@@ -90,11 +91,12 @@ export function LoginPage() {
             <div className="text-center mb-2">
               <h3 className="text-lg font-bold">{isSignUp ? 'Crear cuenta' : 'Iniciar sesion'}</h3>
               <p className="text-xs text-grove-300 mt-0.5">
-                {isSignUp ? 'Registra tus datos para empezar' : 'Accede con tu nombre y contrasena'}
+                {isSignUp ? 'Registra tus datos para empezar' : 'Accede con tu correo y contrasena'}
               </p>
             </div>
 
             <form onSubmit={handleSubmit} className="space-y-3">
+              {isSignUp && (
               <div className="grid grid-cols-2 gap-3">
                 <div className="relative">
                   <UserIcon className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-grove-300" />
@@ -118,15 +120,29 @@ export function LoginPage() {
                   />
                 </div>
               </div>
+              )}
+              <div className="relative">
+                <Mail className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-grove-300" />
+                <input
+                  type="email"
+                  required
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  placeholder="Correo electronico"
+                  autoComplete="email"
+                  className="w-full rounded-xl bg-white/10 border border-white/20 text-white placeholder:text-grove-300 px-10 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-grove-400"
+                />
+              </div>
               <div className="relative">
                 <Lock className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-grove-300" />
                 <input
                   type="password"
                   required
-                  minLength={4}
+                  minLength={6}
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
-                  placeholder="Contrasena (minimo 4 caracteres)"
+                  placeholder="Contrasena (minimo 6 caracteres)"
+                  autoComplete={isSignUp ? 'new-password' : 'current-password'}
                   className="w-full rounded-xl bg-white/10 border border-white/20 text-white placeholder:text-grove-300 px-10 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-grove-400"
                 />
               </div>
@@ -152,7 +168,7 @@ export function LoginPage() {
           </div>
 
           <p className="mt-3 text-center text-xs text-grove-400">
-            Tus datos se guardan en este dispositivo. No se comparten con nadie.
+Tu cuenta se protege con tu correo y contrasena. Los datos de tu finca se guardan en este dispositivo.
           </p>
         </div>
       </div>

@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import type { Page } from '@/types';
-import { AuthProvider, useAuth } from '@/hooks/useAuth';
+import { AuthProvider, useAuth, type AppUser } from '@/hooks/useAuth';
 import { useAppData } from '@/hooks/useAppData';
 import { useSettings } from '@/hooks/useSettings';
 import { I18nProvider } from '@/lib/i18n';
@@ -9,6 +9,8 @@ import { Dashboard } from '@/pages/Dashboard';
 import { CoffeeModule } from '@/pages/CoffeeModule';
 import { RiceModule } from '@/pages/RiceModule';
 import { CacaoModule } from '@/pages/CacaoModule';
+import { StorePage } from '@/pages/StorePage';
+import { SellerCatalogPage } from '@/pages/SellerCatalogPage';
 import { MyFarmPage } from '@/pages/MyFarmPage';
 import { AssistantPage } from '@/pages/AssistantPage';
 import { LoginPage } from '@/pages/LoginPage';
@@ -23,8 +25,26 @@ import { Sparkles, Loader2 } from 'lucide-react';
 
 function AppContent() {
   const { user, loading } = useAuth();
+
+  if (loading) {
+    return (
+      <div className="min-h-screen flex flex-col items-center justify-center bg-grove-900 text-white">
+        <Loader2 className="h-10 w-10 animate-spin text-grove-300 mb-4" />
+        <p className="text-sm text-grove-200">Cargando AgroSinergia 360...</p>
+      </div>
+    );
+  }
+
+  if (!user) {
+    return <LoginPage />;
+  }
+
+  return <FarmWorkspace key={user.id} user={user} />;
+}
+
+function FarmWorkspace({ user }: { user: AppUser }) {
   const [page, setPage] = useState<Page>('dashboard');
-  const { data, update, isOnline, resetData, exportData, importData } = useAppData();
+  const { data, update, isOnline, resetData, exportData, importData } = useAppData(user.id);
   const { settings } = useSettings();
 
   useEffect(() => {
@@ -44,19 +64,6 @@ function AppContent() {
     setPage(p);
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
-
-  if (loading) {
-    return (
-      <div className="min-h-screen flex flex-col items-center justify-center bg-grove-900 text-white">
-        <Loader2 className="h-10 w-10 animate-spin text-grove-300 mb-4" />
-        <p className="text-sm text-grove-200">Cargando AgroSinergia 360...</p>
-      </div>
-    );
-  }
-
-  if (!user) {
-    return <LoginPage />;
-  }
 
   const farmName = data.farmConfig.farmName || 'Mi Finca';
   const showFloatingButton = page !== 'assistant';
@@ -110,6 +117,10 @@ function AppContent() {
             {page === 'biomass' && <BiomassPage data={data} />}
 
             {page === 'docs' && <DocsPage />}
+
+            {page === 'store' && <StorePage userId={user.id} />}
+
+            {page === 'mystore' && <SellerCatalogPage userId={user.id} />}
 
             {page === 'settings' && (
               <SettingsPage user={user} onNavigate={handleNavigate} />

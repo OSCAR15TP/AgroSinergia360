@@ -1,5 +1,5 @@
 import type { Page } from '@/types';
-import type { LocalUser } from '@/hooks/useAuth';
+import type { AppUser } from '@/hooks/useAuth';
 import { useAuth } from '@/hooks/useAuth';
 import { useSettings, type UserSettings } from '@/hooks/useSettings';
 import { useI18n } from '@/lib/i18n';
@@ -12,7 +12,7 @@ import {
 } from 'lucide-react';
 
 interface SettingsPageProps {
-  user: LocalUser;
+  user: AppUser;
   onNavigate: (page: Page) => void;
 }
 
@@ -46,7 +46,7 @@ export function SettingsPage({ user, onNavigate }: SettingsPageProps) {
           <div className="flex-1 min-w-0">
             <h2 className="text-lg font-bold text-earth-900 truncate dark:text-earth-100">{name}</h2>
             <p className="text-sm text-earth-500 truncate dark:text-earth-400">
-              {t('settings.about')} · {new Date(user.createdAt).toLocaleDateString('es', { day: 'numeric', month: 'short', year: 'numeric' })}
+              {t('settings.about')} · {user.email}
             </p>
           </div>
         </div>
