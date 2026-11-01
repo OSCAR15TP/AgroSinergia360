@@ -188,14 +188,6 @@ export function MyFarmPage({ data, update, isOnline, cloudSynced, onReset, onExp
             enabled={data.farmConfig.modules.rice}
             onToggle={() => toggleModule('rice')}
           />
-          <ModuleToggle
-            icon={<Beef className="h-5 w-5" />}
-            title="Ganadería"
-            desc="Hato, pastoreo rotacional y compostaje"
-            color="clay"
-            enabled={data.farmConfig.modules.livestock}
-            onToggle={() => toggleModule('livestock')}
-          />
         </div>
       </div>
 

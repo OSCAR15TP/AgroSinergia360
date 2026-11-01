@@ -39,8 +39,7 @@ export function Dashboard({ data, onNavigate, isOnline, cloudSynced }: Dashboard
     .slice(0, 4);
 
   const pendingAlerts = data.paddocks.filter(p => p.grassHeight < 20 && p.status === 'en_uso').length
-    + data.ricePlots.filter(p => p.soilMoisture < 30).length
-    + data.cattle.filter(c => c.healthStatus === 'en_tratamiento' || c.healthStatus === 'en_cuarentena').length;
+    + data.ricePlots.filter(p => p.soilMoisture < 30).length;
 
   const moduleCards = [
     {
@@ -68,19 +67,6 @@ export function Dashboard({ data, onNavigate, isOnline, cloudSynced }: Dashboard
       countLabel: lang === 'en' ? 'plots' : lang === 'pt' ? 'lotes' : 'lotes',
       enabled: data.farmConfig.modules.rice,
       img: resolveDocPath('/docs/es/arroz/image~1png.png'),
-    },
-    {
-      page: 'livestock' as Page,
-      icon: Beef,
-      title: 'Ganadería',
-      desc: lang === 'en' ? 'Herd log, rotational grazing, and organic composting.' : lang === 'pt' ? 'Registro do rebanho, pastejo rotacionado e compostagem orgânica.' : 'Bitácora del hato, pastoreo rotacional y compostaje orgánico.',
-      color: 'bg-clay-500',
-      bg: 'bg-clay-50',
-      text: 'text-clay-700',
-      count: data.cattle.length,
-      countLabel: lang === 'en' ? 'animals' : lang === 'pt' ? 'animais' : 'animales',
-      enabled: data.farmConfig.modules.livestock,
-      img: resolveDocPath('/docs/es/ganaderia/image.png'),
     },
   ];
 
@@ -258,7 +244,6 @@ export function Dashboard({ data, onNavigate, isOnline, cloudSynced }: Dashboard
         <StatCard icon={<Leaf className="h-5 w-5" />} label={t('dash.modules_active')} value={activeModules} color="grove" />
         <StatCard icon={<Coffee className="h-5 w-5" />} label={t('dash.coffee_diag')} value={data.coffeeDiagnoses.length} color="harvest" />
         <StatCard icon={<Wheat className="h-5 w-5" />} label={t('dash.rice_plots')} value={data.ricePlots.length} color="sky" />
-        <StatCard icon={<Beef className="h-5 w-5" />} label={t('dash.animals')} value={data.cattle.length} color="clay" />
       </div>
 
       {/* Alerts */}
