@@ -10,7 +10,6 @@ const es: Dict = {
   'nav.dashboard': 'Inicio',
   'nav.coffee': 'Café',
   'nav.rice': 'Arroz',
-  'nav.livestock': 'Ganadería',
   'nav.economics': 'Economía',
   'nav.carbon': 'Huella CO₂',
   'nav.biomass': 'Biomasa',
@@ -21,7 +20,7 @@ const es: Dict = {
 
   // Dashboard
   'dash.welcome': 'Bienvenido a',
-  'dash.tagline': 'Plataforma de agricultura de precisión y economía circular. Gestione café, arroz y ganadería desde un solo lugar.',
+  'dash.tagline': 'Plataforma de agricultura de precisión y economía circular. Gestione café, arroz y cacao desde un solo lugar.',
   'dash.operational': 'Operativo',
   'dash.synced': 'Sincronizado',
   'dash.offline_mode': 'Modo sin conexión',
@@ -38,7 +37,6 @@ const es: Dict = {
   'dash.modules_active': 'Módulos Activos',
   'dash.coffee_diag': 'Diagnósticos Café',
   'dash.rice_plots': 'Lotes de Arroz',
-  'dash.animals': 'Animales',
   'dash.attention': 'Atención requerida',
   'dash.modules': 'Módulos de Gestión',
   'dash.module_disabled': 'Módulo desactivado. Actívalo desde Mi Finca.',
@@ -121,7 +119,7 @@ const es: Dict = {
   'ai.groq_connected': 'IA Groq conectada',
   'ai.local_active': 'Conocimiento local activo',
   'ai.welcome': 'Hola, soy tu asistente agronómico',
-  'ai.welcome_desc': 'Puedo darte recomendaciones personalizadas sobre café, arroz, ganadería, suelos, plagas y más, basadas en los datos de tu finca.',
+  'ai.welcome_desc': 'Puedo darte recomendaciones personalizadas sobre café, arroz, cacao, suelos, plagas y más, basadas en los datos de tu finca.',
   'ai.suggested': 'Preguntas sugeridas',
   'ai.placeholder': 'Escribe tu consulta agronómica...',
   'ai.groq_footer': 'Asistente potenciado con Groq IA · Respuestas avanzadas',
@@ -131,7 +129,7 @@ const es: Dict = {
   'ai.history': 'Historial',
   'ai.clear': 'Borrar chat',
   'ai.image_diag': 'Diagnóstico por imagen',
-  'ai.image_diag_desc': 'Sube una fotografía del cultivo o animal para obtener una orientación inicial sobre su estado.',
+  'ai.image_diag_desc': 'Sube una fotografía del cultivo para obtener una orientación inicial sobre su estado.',
   'ai.no_saved': 'No hay conversaciones guardadas aún.',
 };
 
@@ -139,7 +137,6 @@ const en: Dict = {
   'nav.dashboard': 'Home',
   'nav.coffee': 'Coffee',
   'nav.rice': 'Rice',
-  'nav.livestock': 'Livestock',
   'nav.economics': 'Economics',
   'nav.carbon': 'Carbon Footprint',
   'nav.biomass': 'Biomass',
@@ -149,7 +146,7 @@ const en: Dict = {
   'nav.settings': 'Settings',
 
   'dash.welcome': 'Welcome to',
-  'dash.tagline': 'Precision agriculture and circular economy platform. Manage coffee, rice, and livestock in one place.',
+  'dash.tagline': 'Precision agriculture and circular economy platform. Manage coffee, rice, and cacao in one place.',
   'dash.operational': 'Operational',
   'dash.synced': 'Synced',
   'dash.offline_mode': 'Offline mode',
@@ -166,7 +163,6 @@ const en: Dict = {
   'dash.modules_active': 'Active Modules',
   'dash.coffee_diag': 'Coffee Diagnoses',
   'dash.rice_plots': 'Rice Plots',
-  'dash.animals': 'Animals',
   'dash.attention': 'Attention required',
   'dash.modules': 'Management Modules',
   'dash.module_disabled': 'Module disabled. Enable it from My Farm.',
@@ -246,7 +242,7 @@ const en: Dict = {
   'ai.groq_connected': 'Groq AI connected',
   'ai.local_active': 'Local knowledge active',
   'ai.welcome': 'Hi, I am your agronomic assistant',
-  'ai.welcome_desc': 'I can give you personalized recommendations on coffee, rice, livestock, soils, pests, and more, based on your farm data.',
+  'ai.welcome_desc': 'I can give you personalized recommendations on coffee, rice, cacao, soils, pests, and more, based on your farm data.',
   'ai.suggested': 'Suggested questions',
   'ai.placeholder': 'Type your agronomic query...',
   'ai.groq_footer': 'Powered by Groq AI · Advanced responses',
@@ -256,7 +252,7 @@ const en: Dict = {
   'ai.history': 'History',
   'ai.clear': 'Clear chat',
   'ai.image_diag': 'Image diagnosis',
-  'ai.image_diag_desc': 'Upload a photo of your crop or animal to get an initial assessment of its condition.',
+  'ai.image_diag_desc': 'Upload a photo of your crop to get an initial assessment of its condition.',
   'ai.no_saved': 'No saved conversations yet.',
 };
 
@@ -264,7 +260,6 @@ const pt: Dict = {
   'nav.dashboard': 'Início',
   'nav.coffee': 'Café',
   'nav.rice': 'Arroz',
-  'nav.livestock': 'Pecuária',
   'nav.economics': 'Economia',
   'nav.carbon': 'Pegada CO₂',
   'nav.biomass': 'Biomassa',
@@ -274,7 +269,7 @@ const pt: Dict = {
   'nav.settings': 'Configurações',
 
   'dash.welcome': 'Bem-vindo a',
-  'dash.tagline': 'Plataforma de agricultura de precisão e economia circular. Gerencie café, arroz e pecuária em um só lugar.',
+  'dash.tagline': 'Plataforma de agricultura de precisão e economia circular. Gerencie café, arroz e cacau em um só lugar.',
   'dash.operational': 'Operacional',
   'dash.synced': 'Sincronizado',
   'dash.offline_mode': 'Modo offline',
@@ -291,7 +286,6 @@ const pt: Dict = {
   'dash.modules_active': 'Módulos Ativos',
   'dash.coffee_diag': 'Diagnósticos Café',
   'dash.rice_plots': 'Lotes de Arroz',
-  'dash.animals': 'Animais',
   'dash.attention': 'Atenção necessária',
   'dash.modules': 'Módulos de Gestão',
   'dash.module_disabled': 'Módulo desativado. Ative em Minha Fazenda.',
@@ -371,7 +365,7 @@ const pt: Dict = {
   'ai.groq_connected': 'Groq IA conectado',
   'ai.local_active': 'Conhecimento local ativo',
   'ai.welcome': 'Olá, sou seu assistente agronômico',
-  'ai.welcome_desc': 'Posso dar recomendações personalizadas sobre café, arroz, pecuária, solos, pragas e mais, baseadas nos dados da sua fazenda.',
+  'ai.welcome_desc': 'Posso dar recomendações personalizadas sobre café, arroz, cacau, solos, pragas e mais, baseadas nos dados da sua fazenda.',
   'ai.suggested': 'Perguntas sugeridas',
   'ai.placeholder': 'Digite sua consulta agronômica...',
   'ai.groq_footer': 'Powered by Groq IA · Respostas avançadas',
@@ -381,7 +375,7 @@ const pt: Dict = {
   'ai.history': 'Histórico',
   'ai.clear': 'Limpar chat',
   'ai.image_diag': 'Diagnóstico por imagem',
-  'ai.image_diag_desc': 'Envie uma foto da cultura ou animal para obter uma avaliação inicial do seu estado.',
+  'ai.image_diag_desc': 'Envie uma foto da cultura para obter uma avaliação inicial do seu estado.',
   'ai.no_saved': 'Nenhuma conversa salva ainda.',
 };
 

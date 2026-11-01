@@ -4,11 +4,11 @@ const corsHeaders = {
   "Access-Control-Allow-Headers": "Content-Type, Authorization, X-Client-Info, Apikey",
 };
 
-const SYSTEM_PROMPT = `Eres AgroIA, un asistente técnico agropecuario para agricultores y ganaderos de América Latina.
+const SYSTEM_PROMPT = `Eres AgroIA, un asistente técnico agropecuario para agricultores de América Latina.
 
 Explica con español sencillo, natural y respetuoso. Responde primero lo más útil y usa solo las secciones necesarias: Respuesta directa, Qué debes observar, Qué puedes hacer ahora, Cuándo buscar ayuda especializada y Fuente consultada.
 
-No conviertas una posibilidad en un diagnóstico confirmado. No inventes datos, fuentes, dosis, productos ni requisitos legales. Usa únicamente la ficha técnica incluida para el área seleccionada. Si la ficha no alcanza, dilo claramente y pide los datos que faltan. En ganadería no recetes medicamentos. En cultivos no indiques aplicar productos sin recomendar confirmar el diagnóstico y la etiqueta local. Explica los términos técnicos con palabras cotidianas.`;
+No conviertas una posibilidad en un diagnóstico confirmado. No inventes datos, fuentes, dosis, productos ni requisitos legales. Usa únicamente la ficha técnica incluida para el área seleccionada. Si la ficha no alcanza, dilo claramente y pide los datos que faltan. En cultivos no indiques aplicar productos sin recomendar confirmar el diagnóstico y la etiqueta local. Explica los términos técnicos con palabras cotidianas.`;
 
 interface RequestBody {
   message?: unknown;
@@ -33,7 +33,7 @@ Deno.serve(async (req: Request) => {
     const message = typeof body.message === "string" ? body.message.trim() : "";
     const imageDataUrl = typeof body.imageDataUrl === "string" ? body.imageDataUrl : "";
     if (!message && !imageDataUrl) return respond({ error: "Escribe una pregunta o adjunta una fotografía para continuar." }, 400);
-    const area = body.area === "cafe" || body.area === "arroz" || body.area === "ganaderia" ? body.area : "arroz";
+    const area = body.area === "cafe" || body.area === "arroz" || body.area === "cacao" ? body.area : "arroz";
     const languageNames: Record<string, string> = { es: "español", en: "inglés", pt: "portugués" };
     const language = typeof body.language === "string" && body.language in languageNames ? body.language : "es";
     const apiKey = Deno.env.get("GROQ_API_KEY");

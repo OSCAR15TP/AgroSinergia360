@@ -7,7 +7,7 @@ export const defaultFarmConfig: FarmConfig = {
   farmName: 'Mi Finca',
   location: '',
   size: 0,
-  modules: { coffee: true, rice: true, livestock: true },
+  modules: { coffee: true, rice: true },
   lastBackup: null,
 };
 
@@ -15,8 +15,6 @@ export const defaultData: AppData = {
   farmConfig: defaultFarmConfig,
   coffeeDiagnoses: [],
   ricePlots: [],
-  cattle: [],
-  paddocks: [],
   events: [],
   economicRecords: [],
   carbonRecords: [],

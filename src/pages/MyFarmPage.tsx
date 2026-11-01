@@ -4,7 +4,7 @@ import { Alert } from '@/components/Alert';
 import { Badge } from '@/components/UI';
 import { StatCard } from '@/components/StatCard';
 import {
-  Tractor, Check, Wifi, WifiOff, Download, Upload, Trash2, Coffee, Wheat, Beef,
+  Tractor, Check, Wifi, WifiOff, Download, Upload, Trash2, Coffee, Wheat,
   Info, MapPin, Maximize, Database, Shield, Cloud, CloudOff, Sparkles, ExternalLink, ArrowRight,
 } from 'lucide-react';
 import { formatDate } from '@/hooks/useAppData';
@@ -49,7 +49,7 @@ export function MyFarmPage({ data, update, isOnline, cloudSynced, onReset, onExp
     reader.readAsText(file);
   };
 
-  const toggleModule = (key: 'coffee' | 'rice' | 'livestock') => {
+  const toggleModule = (key: 'coffee' | 'rice') => {
     update(prev => ({
       ...prev,
       farmConfig: {
@@ -60,7 +60,7 @@ export function MyFarmPage({ data, update, isOnline, cloudSynced, onReset, onExp
   };
 
   const totalRecords =
-    data.coffeeDiagnoses.length + data.ricePlots.length + data.cattle.length + data.paddocks.length + data.events.length;
+    data.coffeeDiagnoses.length + data.ricePlots.length + data.events.length;
 
   return (
     <div className="space-y-5">
@@ -197,7 +197,6 @@ export function MyFarmPage({ data, update, isOnline, cloudSynced, onReset, onExp
         <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
           <StatCard icon={<Coffee className="h-5 w-5" />} label="Diagnósticos" value={data.coffeeDiagnoses.length} color="harvest" />
           <StatCard icon={<Wheat className="h-5 w-5" />} label="Lotes Arroz" value={data.ricePlots.length} color="sky" />
-          <StatCard icon={<Beef className="h-5 w-5" />} label="Animales" value={data.cattle.length} color="clay" />
           <StatCard icon={<Database className="h-5 w-5" />} label="Total Registros" value={totalRecords} color="grove" />
         </div>
       </div>
@@ -250,7 +249,7 @@ export function MyFarmPage({ data, update, isOnline, cloudSynced, onReset, onExp
           <div>
             <h4 className="text-sm font-bold text-sky-900">{t('farm.private_title')}</h4>
             <p className="text-sm text-sky-800 mt-1">
-              Cada usuario tiene su propio espacio privado. Nadie más puede ver tus diagnósticos, lotes, animales o configuración. Los datos se sincronizan en la nube solo con tu cuenta.
+              Cada usuario tiene su propio espacio privado. Nadie más puede ver tus diagnósticos, lotes o configuración. Los datos se sincronizan en la nube solo con tu cuenta.
             </p>
           </div>
         </div>

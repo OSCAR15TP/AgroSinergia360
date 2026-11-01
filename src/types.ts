@@ -47,44 +47,11 @@ export interface ClimateData {
   updatedAt: string;
 }
 
-export interface Cattle {
-  id: string;
-  tagNumber: string;
-  breed: string;
-  birthDate: string;
-  weight: number;
-  healthStatus: HealthStatus;
-  reproductiveStatus: ReproductiveStatus;
-  vaccinations: VaccinationEvent[];
-  weightHistory: { date: string; weight: number }[];
-  notes: string;
-}
-
-export type HealthStatus = 'sano' | 'en_tratamiento' | 'en_cuarentena' | 'en_observacion';
-export type ReproductiveStatus = 'vacia' | 'prenada' | 'lactancia' | 'servida' | 'seca';
-
-export interface VaccinationEvent {
-  id: string;
-  date: string;
-  vaccine: string;
-  nextDate: string;
-}
-
-export interface Paddock {
-  id: string;
-  name: string;
-  area: number;
-  grassHeight: number;
-  cattleCount: number;
-  restDays: number;
-  status: 'en_uso' | 'en_descanso' | 'listo';
-}
-
 export interface FarmConfig {
   farmName: string;
   location: string;
   size: number;
-  modules: { coffee: boolean; rice: boolean; livestock: boolean };
+  modules: { coffee: boolean; rice: boolean };
   lastBackup: string | null;
 }
 
@@ -92,8 +59,6 @@ export interface AppData {
   farmConfig: FarmConfig;
   coffeeDiagnoses: CoffeeDiagnosis[];
   ricePlots: RicePlot[];
-  cattle: Cattle[];
-  paddocks: Paddock[];
   events: FarmEvent[];
   economicRecords: EconomicRecord[];
   carbonRecords: CarbonRecord[];
@@ -102,16 +67,16 @@ export interface AppData {
 export interface FarmEvent {
   id: string;
   date: string;
-  type: 'vacunacion' | 'pesaje' | 'parto' | 'servicio' | 'diagnostico' | 'rotacion' | 'riego' | 'cosecha';
+  type: 'diagnostico' | 'rotacion' | 'riego' | 'cosecha';
   title: string;
   description: string;
-  module: 'coffee' | 'rice' | 'livestock' | 'general';
+  module: 'coffee' | 'rice' | 'general';
   done: boolean;
 }
 
 export interface EconomicRecord {
   id: string;
-  module: 'coffee' | 'rice' | 'livestock';
+  module: 'coffee' | 'rice';
   date: string;
   area: number;
   productionKg: number;
@@ -141,7 +106,7 @@ export interface CarbonRecord {
 
 export interface LocalGuideMeta {
   id: string;
-  module: 'cafe' | 'arroz' | 'ganaderia' | 'circular';
+  module: 'cafe' | 'arroz' | 'circular';
   title: string;
   description: string;
   path: string;

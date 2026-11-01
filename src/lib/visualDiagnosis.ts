@@ -32,38 +32,6 @@ export function analyzeRicePhoto(photoDataUrl: string): Promise<VisualDiagnosisR
   });
 }
 
-export function analyzeLivestockPhoto(photoDataUrl: string): Promise<VisualDiagnosisResult> {
-  void photoDataUrl;
-  return new Promise((resolve) => {
-    window.setTimeout(() => {
-      const results: VisualDiagnosisResult[] = [
-        {
-          label: 'Condición corporal adecuada',
-          confidence: 0.88,
-          severity: 'success',
-          summary: 'La imagen sugiere una condición corporal estable, sin signos visibles de alarma.',
-          recommendations: ['Mantén agua limpia y sombra disponible.', 'Registra el peso para confirmar la evolución.'],
-        },
-        {
-          label: 'Revisar condición corporal',
-          confidence: 0.77,
-          severity: 'warning',
-          summary: 'La silueta puede indicar pérdida de condición o una necesidad nutricional mayor.',
-          recommendations: ['Realiza un pesaje y revisa la dieta.', 'Observa apetito, marcha y comportamiento durante 24 horas.'],
-        },
-        {
-          label: 'Posible signo de salud',
-          confidence: 0.72,
-          severity: 'danger',
-          summary: 'La imagen muestra un signo que debe ser revisado por una persona veterinaria.',
-          recommendations: ['Separa el animal si hay secreciones, heridas o decaimiento.', 'No administres medicamentos sin diagnóstico profesional.'],
-        },
-      ];
-      resolve(results[Math.floor(Math.random() * results.length)]);
-    }, 650);
-  });
-}
-
 export function analyzeGeneralPhoto(photoDataUrl: string): Promise<VisualDiagnosisResult> {
   void photoDataUrl;
   return new Promise((resolve) => {
@@ -73,7 +41,7 @@ export function analyzeGeneralPhoto(photoDataUrl: string): Promise<VisualDiagnos
           label: 'Sin signos visibles de problema',
           confidence: 0.85,
           severity: 'success',
-          summary: 'La imagen no muestra señales claras de plagas, enfermedades o estrés en el cultivo o animal.',
+          summary: 'La imagen no muestra señales claras de plagas, enfermedades o estrés en el cultivo.',
           recommendations: ['Continúa con el monitoreo regular.', 'Registra tus observaciones para llevar un historial.'],
         },
         {

@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { useAuth } from '@/hooks/useAuth';
-import { Sparkles, Leaf, Wheat, Beef, Shield, WifiOff, Recycle, User as UserIcon, Lock, Loader2, AlertCircle, ArrowRight } from 'lucide-react';
+import { Sparkles, Leaf, Wheat, Sprout, Shield, WifiOff, Recycle, User as UserIcon, Lock, Loader2, AlertCircle, ArrowRight } from 'lucide-react';
 
 export function LoginPage() {
   const { signIn, signUp } = useAuth();
@@ -57,7 +57,7 @@ export function LoginPage() {
             Agricultura de precision y economia circular
           </h2>
           <p className="mt-2 text-sm text-grove-200 max-w-sm">
-            Gestiona cafe, arroz y ganaderia desde un solo lugar. Con asistente IA integrado.
+            Gestiona cafe, arroz y cacao desde un solo lugar. Con asistente IA integrado.
           </p>
         </div>
 
@@ -65,7 +65,7 @@ export function LoginPage() {
         <div className="grid grid-cols-3 gap-3 mb-6 max-w-md w-full animate-slide-up" style={{ animationDelay: '160ms' }}>
           <FeatureCard icon={<Leaf className="h-5 w-5" />} label="Cafe" desc="Diagnostico IA" color="text-harvest-300" />
           <FeatureCard icon={<Wheat className="h-5 w-5" />} label="Arroz" desc="SIPAS + Riego" color="text-sky-300" />
-          <FeatureCard icon={<Beef className="h-5 w-5" />} label="Ganado" desc="Trazabilidad" color="text-clay-300" />
+          <FeatureCard icon={<Sprout className="h-5 w-5" />} label="Cacao" desc="Mazorcas y secado" color="text-clay-300" />
         </div>
 
         {/* Benefits */}

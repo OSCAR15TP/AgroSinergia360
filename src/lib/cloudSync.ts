@@ -1,12 +1,10 @@
 import { supabase } from '@/lib/supabaseClient';
-import type { AppData, CoffeeDiagnosis, RicePlot, Cattle, Paddock, FarmEvent, FarmConfig, EconomicRecord, CarbonRecord } from '@/types';
+import type { AppData, CoffeeDiagnosis, RicePlot, FarmEvent, FarmConfig, EconomicRecord, CarbonRecord } from '@/types';
 
 export interface CloudData {
   farm_configs: any[];
   coffee_diagnoses: any[];
   rice_plots: any[];
-  cattle: any[];
-  paddocks: any[];
   farm_events: any[];
   economic_records: any[];
   carbon_records: any[];
@@ -20,7 +18,6 @@ function mapFarmConfig(row: any): FarmConfig {
     modules: {
       coffee: row.modules_coffee ?? true,
       rice: row.modules_rice ?? true,
-      livestock: row.modules_livestock ?? true,
     },
     lastBackup: row.last_backup ? new Date(row.last_backup).toISOString() : null,
   };
@@ -55,33 +52,6 @@ function mapRicePlot(row: any): RicePlot {
     soilMoisture: Number(row.soil_moisture),
     lastRotationDate: row.last_rotation_date ?? todayISO(),
     notes: row.notes ?? '',
-  };
-}
-
-function mapCattle(row: any): Cattle {
-  return {
-    id: row.id,
-    tagNumber: row.tag_number,
-    breed: row.breed ?? '',
-    birthDate: row.birth_date ?? todayISO(),
-    weight: Number(row.weight),
-    healthStatus: row.health_status,
-    reproductiveStatus: row.reproductive_status,
-    vaccinations: row.vaccinations ?? [],
-    weightHistory: row.weight_history ?? [],
-    notes: row.notes ?? '',
-  };
-}
-
-function mapPaddock(row: any): Paddock {
-  return {
-    id: row.id,
-    name: row.name,
-    area: Number(row.area),
-    grassHeight: Number(row.grass_height),
-    cattleCount: row.cattle_count,
-    restDays: row.rest_days,
-    status: row.status,
   };
 }
 
@@ -137,12 +107,10 @@ function todayISO(): string {
 
 export async function loadCloudData(): Promise<AppData | null> {
   try {
-    const [configs, coffee, rice, cattle, paddocks, events, economic, carbon] = await Promise.all([
+    const [configs, coffee, rice, events, economic, carbon] = await Promise.all([
       supabase.from('farm_configs').select('*').maybeSingle(),
       supabase.from('coffee_diagnoses').select('*').order('created_at', { ascending: false }),
       supabase.from('rice_plots').select('*').order('created_at', { ascending: false }),
-      supabase.from('cattle').select('*').order('created_at', { ascending: false }),
-      supabase.from('paddocks').select('*').order('created_at', { ascending: false }),
       supabase.from('farm_events').select('*').order('date', { ascending: false }),
       supabase.from('economic_records').select('*').order('date', { ascending: false }),
       supabase.from('carbon_records').select('*').order('date', { ascending: false }),
@@ -156,13 +124,11 @@ export async function loadCloudData(): Promise<AppData | null> {
     return {
       farmConfig: configs.data ? mapFarmConfig(configs.data) : {
         farmName: 'Mi Finca', location: '', size: 0,
-        modules: { coffee: true, rice: true, livestock: true },
+        modules: { coffee: true, rice: true },
         lastBackup: null,
       },
       coffeeDiagnoses: (coffee.data ?? []).map(mapCoffeeDiag),
       ricePlots: (rice.data ?? []).map(mapRicePlot),
-      cattle: (cattle.data ?? []).map(mapCattle),
-      paddocks: (paddocks.data ?? []).map(mapPaddock),
       events: (events.data ?? []).map(mapEvent),
       economicRecords: (economic.data ?? []).map(mapEconomic),
       carbonRecords: (carbon.data ?? []).map(mapCarbon),
@@ -182,7 +148,6 @@ export async function syncConfig(config: FarmConfig): Promise<void> {
     size: config.size,
     modules_coffee: config.modules.coffee,
     modules_rice: config.modules.rice,
-    modules_livestock: config.modules.livestock,
     last_backup: config.lastBackup,
     updated_at: new Date().toISOString(),
   };
@@ -236,49 +201,6 @@ export async function syncRicePlots(items: RicePlot[]): Promise<void> {
       await supabase.from('rice_plots').update(payload).eq('id', plot.id);
     } else {
       await supabase.from('rice_plots').insert(payload);
-    }
-  }
-}
-
-export async function syncCattle(items: Cattle[]): Promise<void> {
-  for (const c of items) {
-    const { data: existing } = await supabase.from('cattle').select('id').eq('id', c.id).maybeSingle();
-    const payload = {
-      id: c.id,
-      tag_number: c.tagNumber,
-      breed: c.breed,
-      birth_date: c.birthDate,
-      weight: c.weight,
-      health_status: c.healthStatus,
-      reproductive_status: c.reproductiveStatus,
-      vaccinations: JSON.stringify(c.vaccinations),
-      weight_history: JSON.stringify(c.weightHistory),
-      notes: c.notes,
-    };
-    if (existing) {
-      await supabase.from('cattle').update(payload).eq('id', c.id);
-    } else {
-      await supabase.from('cattle').insert(payload);
-    }
-  }
-}
-
-export async function syncPaddocks(items: Paddock[]): Promise<void> {
-  for (const p of items) {
-    const { data: existing } = await supabase.from('paddocks').select('id').eq('id', p.id).maybeSingle();
-    const payload = {
-      id: p.id,
-      name: p.name,
-      area: p.area,
-      grass_height: p.grassHeight,
-      cattle_count: p.cattleCount,
-      rest_days: p.restDays,
-      status: p.status,
-    };
-    if (existing) {
-      await supabase.from('paddocks').update(payload).eq('id', p.id);
-    } else {
-      await supabase.from('paddocks').insert(payload);
     }
   }
 }
@@ -356,8 +278,6 @@ export async function syncAllData(data: AppData): Promise<void> {
     syncConfig(data.farmConfig),
     syncCoffeeDiagnoses(data.coffeeDiagnoses),
     syncRicePlots(data.ricePlots),
-    syncCattle(data.cattle),
-    syncPaddocks(data.paddocks),
     syncEvents(data.events),
     syncEconomicRecords(data.economicRecords),
     syncCarbonRecords(data.carbonRecords),

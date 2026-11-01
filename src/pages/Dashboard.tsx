@@ -3,8 +3,8 @@ import { StatCard } from '@/components/StatCard';
 import { Alert } from '@/components/Alert';
 import { Badge } from '@/components/UI';
 import {
-  Coffee, Wheat, Beef, CloudSun, Calendar, TrendingUp,
-  Sprout, Droplets, Syringe, Bell, ArrowRight, Wifi, WifiOff,
+  Coffee, Wheat, CloudSun, Calendar,
+  Sprout, Droplets, Bell, ArrowRight, Wifi, WifiOff,
   Leaf, Thermometer, Droplet, Wind, Search, MapPin,
   Sun, Cloud, CloudRain, AlertTriangle, Eye, Loader2,
 } from 'lucide-react';
@@ -38,8 +38,7 @@ export function Dashboard({ data, onNavigate, isOnline, cloudSynced }: Dashboard
     .sort((a, b) => a.date.localeCompare(b.date))
     .slice(0, 4);
 
-  const pendingAlerts = data.paddocks.filter(p => p.grassHeight < 20 && p.status === 'en_uso').length
-    + data.ricePlots.filter(p => p.soilMoisture < 30).length;
+  const pendingAlerts = data.ricePlots.filter(p => p.soilMoisture < 30).length;
 
   const moduleCards = [
     {
@@ -383,8 +382,6 @@ function ForecastIcon({ code }: { code: number }) {
 
 function EventIcon({ type }: { type: string }) {
   switch (type) {
-    case 'vacunacion': return <Syringe className="h-5 w-5" />;
-    case 'pesaje': return <TrendingUp className="h-5 w-5" />;
     case 'rotacion': return <Sprout className="h-5 w-5" />;
     case 'riego': return <Droplets className="h-5 w-5" />;
     case 'diagnostico': return <Coffee className="h-5 w-5" />;

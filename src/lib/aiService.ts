@@ -12,10 +12,6 @@ function buildFarmContext(data: AppData): string {
     parts.push(`Último registro de café: ${last.result}; pH ${last.soilParams.ph}; fósforo ${last.soilParams.phosphorus} ppm; potasio ${last.soilParams.potassium} cmol/kg`);
   }
   if (data.ricePlots.length) parts.push(`Lotes de arroz: ${data.ricePlots.length}. Humedad registrada: ${data.ricePlots.map((plot) => `${plot.name} ${plot.soilMoisture}%`).join(', ')}`);
-  if (data.cattle.length) {
-    const averageWeight = Math.round(data.cattle.reduce((sum, cattle) => sum + cattle.weight, 0) / data.cattle.length);
-    parts.push(`Ganado registrado: ${data.cattle.length} animales; peso promedio ${averageWeight} kg`);
-  }
   return parts.join('\n') || 'No hay datos de finca registrados.';
 }
 
@@ -50,7 +46,7 @@ export async function getAIResponse(message: string, history: ChatMessage[], dat
 
 export async function getAIImageResponse(description: string, imageDataUrl: string, data: AppData, area: AiArea, guide: LocalGuide | null): Promise<{ text: string; source: 'groq' | 'local'; sources: string[] }> {
   const sources = guide ? [guide.title] : [];
-  const localText = `**La fotografía no se puede analizar sin conexión.**\n\nPuedes conservar esta imagen en tu dispositivo y enviarla cuando recuperes Internet. Para una orientación local, describe qué observas: color y forma de las manchas, cuántas plantas o animales están afectados y desde cuándo comenzó.\n\n**Importante:** una fotografía no confirma por sí sola una enfermedad. No apliques productos ni medicamentos basándote únicamente en la imagen.\n\n${guide ? `**Ficha disponible:** ${guide.title}.` : '**Fuente:** no hay una ficha local disponible en este momento.'}`;
+  const localText = `**La fotografía no se puede analizar sin conexión.**\n\nPuedes conservar esta imagen en tu dispositivo y enviarla cuando recuperes Internet. Para una orientación local, describe qué observas: color y forma de las manchas, cuántas plantas están afectadas y desde cuándo comenzó.\n\n**Importante:** una fotografía no confirma por sí sola una enfermedad. No apliques productos ni medicamentos basándote únicamente en la imagen.\n\n${guide ? `**Ficha disponible:** ${guide.title}.` : '**Fuente:** no hay una ficha local disponible en este momento.'}`;
   try {
     const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
     const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY;

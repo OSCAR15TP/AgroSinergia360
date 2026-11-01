@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import type { AppData } from '@/types';
 import {
-  Recycle, Coffee, Wheat, Beef, Minus, Plus, Sprout, Coins, Hand,
+  Recycle, Coffee, Wheat, Minus, Plus, Sprout, Coins, Hand,
   Thermometer, CalendarDays, ArrowDown, CheckCircle2, AlertTriangle, Bed,
 } from 'lucide-react';
 
@@ -11,14 +11,13 @@ interface BiomassPageProps {
 
 type Region = 'costa' | 'sierra' | 'selva';
 
-const MANURE_KG_PER_COW_PER_MONTH = 300;
 const COFFEE_PULP_KG_PER_HA = 2000;
 const HUSK_KG_PER_RICE_SACK = 10;
 const COMPOST_YIELD = 0.5;
 const SACK_KG = 50;
 const WHEELBARROW_KG = 60;
 const COMPOST_PRICE_PER_SACK = 25;
-const RATIO = { manure: 3, pulp: 2, husk: 1 };
+const RATIO = { pulp: 2, husk: 1 };
 
 const REGION_INFO: Record<Region, { label: string; days: string; turn: string; tip: string }> = {
   costa: {
@@ -41,24 +40,22 @@ const REGION_INFO: Record<Region, { label: string; days: string; turn: string; t
   },
 };
 
-function calculate(cows: number, coffeeHa: number, riceSacks: number) {
-  const manure = cows * MANURE_KG_PER_COW_PER_MONTH;
+function calculate(coffeeHa: number, riceSacks: number) {
   const pulp = coffeeHa * COFFEE_PULP_KG_PER_HA;
   const husk = riceSacks * HUSK_KG_PER_RICE_SACK;
 
-  const totalMix = manure + pulp + husk;
+  const totalMix = pulp + husk;
   const compostKg = totalMix * COMPOST_YIELD;
   const compostSacks = Math.floor(compostKg / SACK_KG);
 
-  const parts = Math.max(manure / RATIO.manure, pulp / RATIO.pulp, husk / RATIO.husk);
+  const parts = Math.max(pulp / RATIO.pulp, husk / RATIO.husk);
   const missing = [
-    { name: 'estiércol', substitute: 'gallinaza, estiércol de cuy u oveja', kg: parts * RATIO.manure - manure },
     { name: 'pulpa de café', substitute: 'hierba verde picada, cáscaras de plátano o restos de cocina', kg: parts * RATIO.pulp - pulp },
     { name: 'cascarilla de arroz', substitute: 'hojas secas, paja, rastrojo de maíz o aserrín', kg: parts * RATIO.husk - husk },
   ].filter(m => m.kg >= SACK_KG);
 
   return {
-    manure, pulp, husk,
+    pulp, husk,
     compostKg, compostSacks,
     savings: compostSacks * COMPOST_PRICE_PER_SACK,
     missing,
@@ -69,15 +66,13 @@ const kgToSacks = (kg: number) => Math.round(kg / SACK_KG);
 const kgToWheelbarrows = (kg: number) => Math.round(kg / WHEELBARROW_KG);
 
 export function BiomassPage({ data }: BiomassPageProps) {
-  const initialCows = data.cattle.length;
-  const [cows, setCows] = useState(initialCows > 0 ? initialCows : 5);
   const [coffeeHa, setCoffeeHa] = useState(2);
   const [riceSacks, setRiceSacks] = useState(40);
   const [region, setRegion] = useState<Region>('sierra');
 
-  const r = calculate(cows, coffeeHa, riceSacks);
+  const r = calculate(coffeeHa, riceSacks);
   const info = REGION_INFO[region];
-  const hasAny = cows > 0 || coffeeHa > 0 || riceSacks > 0;
+  const hasAny = coffeeHa > 0 || riceSacks > 0;
 
   return (
     <div className="space-y-6 animate-fade-in">
@@ -97,8 +92,7 @@ export function BiomassPage({ data }: BiomassPageProps) {
         <h2 id="inputs-title" className="text-sm font-bold text-earth-800 mb-1">1. Cuéntanos de tu finca</h2>
         <p className="text-xs text-earth-500 mb-4">Usa los botones + y − . No necesitas internet.</p>
 
-        <div className="grid gap-3 sm:grid-cols-3">
-          <Stepper icon={<Beef className="h-5 w-5" />} label="Vacas" hint="cabezas de ganado" value={cows} onChange={setCows} step={1} />
+        <div className="grid gap-3 sm:grid-cols-2">
           <Stepper icon={<Coffee className="h-5 w-5" />} label="Café" hint="hectáreas" value={coffeeHa} onChange={setCoffeeHa} step={0.5} />
           <Stepper icon={<Wheat className="h-5 w-5" />} label="Arroz cosechado" hint="sacos de 50 kg" value={riceSacks} onChange={setRiceSacks} step={5} />
         </div>
@@ -132,7 +126,7 @@ export function BiomassPage({ data }: BiomassPageProps) {
           <div className="rounded-xl bg-harvest-50 border border-harvest-200 p-4 flex gap-3">
             <AlertTriangle className="h-5 w-5 text-harvest-600 flex-shrink-0" />
             <p className="text-sm text-earth-700">
-              Pon cuántas vacas, hectáreas de café o sacos de arroz tienes para calcular tu abono.
+              Pon cuántas hectáreas de café o sacos de arroz tienes para calcular tu abono.
             </p>
           </div>
         ) : (
@@ -155,9 +149,8 @@ export function BiomassPage({ data }: BiomassPageProps) {
               <p>La receta se mide en carretillas: no necesitas balanza.</p>
             </div>
 
-            <p className="text-xs font-semibold text-earth-700 mb-2">Mezcla así: por cada 6 carretillas</p>
+            <p className="text-xs font-semibold text-earth-700 mb-2">Mezcla así: por cada 3 carretillas</p>
             <ul className="space-y-2">
-              <Ingredient icon={<Beef className="h-5 w-5" />} parts={3} name="Estiércol de vaca" role="Da el nitrógeno, la fuerza del abono" kg={r.manure} />
               <Ingredient icon={<Coffee className="h-5 w-5" />} parts={2} name="Pulpa de café" role="Da potasio y alimenta a los microbios" kg={r.pulp} />
               <Ingredient icon={<Wheat className="h-5 w-5" />} parts={1} name="Cascarilla de arroz" role="Deja pasar el aire y quita el exceso de agua" kg={r.husk} />
             </ul>
@@ -194,11 +187,11 @@ export function BiomassPage({ data }: BiomassPageProps) {
 
         <ol className="space-y-3">
           <Step n={1} title="Escoge el lugar">Bajo sombra, en terreno un poco inclinado para que no se empoce el agua, y lejos de quebradas o pozos.</Step>
-          <Step n={2} title="Arma la pila en capas">Pon primero una capa de cascarilla, luego estiércol y después pulpa. Repite hasta llegar a la altura de tu cintura (1 a 1.5 m).</Step>
+          <Step n={2} title="Arma la pila en capas">Pon primero una capa de cascarilla y después una de pulpa. Repite hasta llegar a la altura de tu cintura (1 a 1.5 m).</Step>
           <Step n={3} title="Moja cada capa">Riega un poco cada capa mientras la armas. No debe chorrear agua.</Step>
           <Step n={4} title="Revisa el calor">Mete un palo o machete al centro por 5 minutos. Si sale caliente (no aguantas la mano), va bien.</Step>
           <Step n={5} title={`Voltea ${info.turn}`}>Pasa lo de afuera hacia adentro con la pala. Así entra aire y todo se descompone parejo.</Step>
-          <Step n={6} title="¿Cuándo está listo?">Cuando ya no está caliente, es oscuro, se desmorona y huele a tierra de monte. Ya no reconoces la pulpa ni el estiércol.</Step>
+          <Step n={6} title="¿Cuándo está listo?">Cuando ya no está caliente, es oscuro, se desmorona y huele a tierra de monte. Ya no reconoces la pulpa.</Step>
         </ol>
 
         <div className="mt-4 rounded-xl border border-grove-200 bg-grove-50 p-4 flex gap-3">
@@ -222,11 +215,9 @@ export function BiomassPage({ data }: BiomassPageProps) {
         <ul className="space-y-2 text-sm text-earth-700">
           <UseItem>Café: 2 a 3 kg por planta al inicio de lluvias, alrededor del tallo sin tocarlo.</UseItem>
           <UseItem>Arroz: 2 a 3 toneladas por hectárea antes de preparar el terreno.</UseItem>
-          <UseItem>Pastos: esparce una capa delgada después de rotar al ganado.</UseItem>
         </ul>
         <p className="mt-4 text-[11px] text-earth-400 leading-relaxed">
-          Los cálculos son aproximados: {MANURE_KG_PER_COW_PER_MONTH} kg de estiércol por vaca al mes,
-          {' '}{COFFEE_PULP_KG_PER_HA.toLocaleString('es-PE')} kg de pulpa por hectárea de café en cosecha,
+          Los cálculos son aproximados: {COFFEE_PULP_KG_PER_HA.toLocaleString('es-PE')} kg de pulpa por hectárea de café en cosecha,
           {' '}{HUSK_KG_PER_RICE_SACK} kg de cascarilla por saco de arroz y S/ {COMPOST_PRICE_PER_SACK} por saco de abono comprado.
         </p>
       </section>
@@ -241,10 +232,9 @@ function CycleCard() {
         Lo que antes botabas o se pudría en un rincón, juntos se convierten en abono.
         El abono vuelve a tus plantas y pastos, y el ciclo empieza de nuevo.
       </p>
-      <div className="grid grid-cols-3 gap-2 text-center">
+      <div className="grid grid-cols-2 gap-2 text-center">
         <CycleSource icon={<Coffee className="h-5 w-5" />} label="Pulpa de café" />
         <CycleSource icon={<Wheat className="h-5 w-5" />} label="Cascarilla de arroz" />
-        <CycleSource icon={<Beef className="h-5 w-5" />} label="Estiércol" />
       </div>
       <div className="flex justify-center py-2 text-earth-400">
         <ArrowDown className="h-5 w-5" aria-hidden="true" />

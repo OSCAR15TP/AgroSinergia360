@@ -19,14 +19,6 @@
       "type": "json"
     },
     {
-      "id": "ganaderia",
-      "module": "ganaderia",
-      "title": "Guía de Ganadería",
-      "description": "Salud, vacunación, parasitismo, manejo reproductivo y bienestar animal.",
-      "path": "/docs/es/ganaderia/guia-ganaderia.json",
-      "type": "json"
-    },
-    {
       "id": "circular",
       "module": "circular",
       "title": "Economía Circular",

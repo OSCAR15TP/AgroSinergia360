@@ -6,7 +6,7 @@ import { Modal } from '@/components/Modal';
 import { resolveDocPath } from '@/lib/localGuides';
 import {
   TrendingUp, Plus, Trash2, DollarSign, Calculator,
-  Coffee, Wheat, Beef, ArrowUpRight, ArrowDownRight, Scale, Target,
+  Coffee, Wheat, ArrowUpRight, ArrowDownRight, Scale, Target,
 } from 'lucide-react';
 
 interface EconomicsPageProps {
@@ -17,7 +17,6 @@ interface EconomicsPageProps {
 const MODULE_META = {
   coffee: { label: 'Café', icon: Coffee, color: 'harvest' as const, bg: 'bg-harvest-50', text: 'text-harvest-700' },
   rice: { label: 'Arroz', icon: Wheat, color: 'sky' as const, bg: 'bg-sky-50', text: 'text-sky-700' },
-  livestock: { label: 'Ganadería', icon: Beef, color: 'clay' as const, bg: 'bg-clay-50', text: 'text-clay-700' },
 };
 
 function calcEconomics(r: EconomicRecord) {
@@ -38,7 +37,7 @@ function money(n: number): string {
 
 export function EconomicsPage({ data, update }: EconomicsPageProps) {
   const [showForm, setShowForm] = useState(false);
-  const [filterModule, setFilterModule] = useState<'all' | 'coffee' | 'rice' | 'livestock'>('all');
+  const [filterModule, setFilterModule] = useState<'all' | 'coffee' | 'rice'>('all');
 
   const records = data.economicRecords
     .filter(r => filterModule === 'all' || r.module === filterModule)
@@ -92,7 +91,7 @@ export function EconomicsPage({ data, update }: EconomicsPageProps) {
       {/* Filter + Add */}
       <div className="flex items-center gap-2 flex-wrap">
         <div className="flex gap-1 rounded-xl bg-earth-100 p-1">
-          {(['all', 'coffee', 'rice', 'livestock'] as const).map(m => (
+          {(['all', 'coffee', 'rice'] as const).map(m => (
             <button
               key={m}
               onClick={() => setFilterModule(m)}
@@ -206,7 +205,7 @@ function Metric({ label, value, sub, highlight }: { label: string; value: string
 }
 
 function EconomicForm({ onAdd, onCancel }: { onAdd: (r: EconomicRecord) => void; onCancel: () => void }) {
-  const [module, setModule] = useState<'coffee' | 'rice' | 'livestock'>('coffee');
+  const [module, setModule] = useState<'coffee' | 'rice'>('coffee');
   const [area, setArea] = useState('');
   const [productionKg, setProductionKg] = useState('');
   const [pricePerKg, setPricePerKg] = useState('');
@@ -245,7 +244,7 @@ function EconomicForm({ onAdd, onCancel }: { onAdd: (r: EconomicRecord) => void;
         <div>
           <label className="label">Módulo</label>
           <div className="flex gap-2">
-            {(['coffee', 'rice', 'livestock'] as const).map(m => {
+            {(['coffee', 'rice'] as const).map(m => {
               const meta = MODULE_META[m];
               const Icon = meta.icon;
               return (
