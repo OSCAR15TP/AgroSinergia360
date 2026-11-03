@@ -22,6 +22,7 @@ import { DocsPage } from '@/pages/DocsPage';
 import { UserProfile } from '@/components/UserProfile';
 import { ErrorBoundary } from '@/components/ErrorBoundary';
 import { Sparkles, Loader2 } from 'lucide-react';
+import { Analytics } from '@vercel/analytics/react';
 
 function AppContent() {
   const { user, loading } = useAuth();
@@ -158,6 +159,7 @@ function FarmWorkspace({ user }: { user: AppUser }) {
           </button>
         )}
       </div>
+      <Analytics />
     </I18nProvider>
   );
 }
