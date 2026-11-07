@@ -5,15 +5,16 @@ import { Alert } from '@/components/Alert';
 import { EmptyState } from '@/components/UI';
 import { TabButton } from '@/components/TabButton';
 import { StatCard } from '@/components/StatCard';
-import { Sprout, Plus, Trash2, Check, Map, Wheat, Package, Scale } from 'lucide-react';
+import { Sprout, Plus, Trash2, Check, Map, Wheat, Package, Scale, CloudSun } from 'lucide-react';
 import { uid, formatDate, todayISO } from '@/hooks/useAppData';
+import { CropWeatherPanel } from '@/components/CropWeatherPanel';
 
 interface CacaoModuleProps {
   data: AppData;
   update: (updater: (prev: AppData) => AppData) => void;
 }
 
-type Tab = 'lots' | 'harvests';
+type Tab = 'lots' | 'harvests' | 'climate';
 
 export function CacaoModule({ data, update }: CacaoModuleProps) {
   const [tab, setTab] = useState<Tab>('lots');
@@ -46,6 +47,7 @@ export function CacaoModule({ data, update }: CacaoModuleProps) {
       <div className="flex gap-1 rounded-xl bg-earth-100 p-1">
         <TabButton active={tab === 'lots'} onClick={() => setTab('lots')} icon={<Map className="h-4 w-4" />}>Lotes</TabButton>
         <TabButton active={tab === 'harvests'} onClick={() => setTab('harvests')} icon={<Wheat className="h-4 w-4" />}>Cosechas</TabButton>
+        <TabButton active={tab === 'climate'} onClick={() => setTab('climate')} icon={<CloudSun className="h-4 w-4" />}>Clima</TabButton>
       </div>
 
       {tab === 'lots' && (
@@ -53,6 +55,12 @@ export function CacaoModule({ data, update }: CacaoModuleProps) {
       )}
       {tab === 'harvests' && (
         <HarvestsTab data={data} update={update} onAdd={() => setShowAddHarvest(true)} />
+      )}
+
+      {tab === 'climate' && (
+        <div className="animate-fade-in">
+          <CropWeatherPanel crop="cacao" location={data.farmConfig.location || undefined} />
+        </div>
       )}
 
       <AddLotModal
