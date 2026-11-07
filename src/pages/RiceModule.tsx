@@ -6,12 +6,13 @@ import { Badge, EmptyState, ProgressBar } from '@/components/UI';
 import { StatCard } from '@/components/StatCard';
 import {
   Wheat, Plus, Trash2, Check, Droplets, CloudSun, Map, RefreshCw, Camera,
-  Thermometer, Sprout, AlertTriangle, Info, Eye, Calculator, X, ArrowRight,
+  Sprout, AlertTriangle, Calculator, X, ArrowRight,
 } from 'lucide-react';
 import { uid, formatDate, todayISO } from '@/hooks/useAppData';
 import { ImageDiagnosisModal } from '@/components/ImageDiagnosisModal';
 import { analyzeRicePhoto } from '@/lib/visualDiagnosis';
 import { resolveDocPath } from '@/lib/localGuides';
+import { CropWeatherPanel } from '@/components/CropWeatherPanel';
 
 interface RiceModuleProps {
   data: AppData;
@@ -79,7 +80,11 @@ export function RiceModule({ data, update }: RiceModuleProps) {
       {tab === 'plots' && (
         <PlotsTab data={data} update={update} showAddPlot={showAddPlot} setShowAddPlot={setShowAddPlot} />
       )}
-      {tab === 'climate' && <ClimateTab plots={data.ricePlots} />}
+      {tab === 'climate' && (
+        <div className="animate-fade-in">
+          <CropWeatherPanel crop="arroz" location={data.farmConfig.location || undefined} />
+        </div>
+      )}
       {tab === 'irrigation' && <IrrigationTab plots={data.ricePlots} />}
 
       <ImageDiagnosisModal
@@ -310,83 +315,6 @@ function AddPlotModal({ open, onClose, onAdd }: {
         </button>
       </div>
     </Modal>
-  );
-}
-
-function ClimateTab({ plots }: { plots: RicePlot[] }) {
-  // Simulated agroclimate data
-  const climate = {
-    temp: 26.5,
-    humidity: 72,
-    soilShallow: 45,
-    soilDeep: 58,
-    eto: 4.2,
-    rainfall: 8.5,
-    wind: 12,
-  };
-
-  return (
-    <div className="space-y-4 animate-fade-in">
-      <Alert type="info" title="Monitoreo Agroclimático">
-        Datos de referencia basados en estaciones climáticas abiertas. La estructura está lista para conectar APIs climáticas reales en el futuro.
-      </Alert>
-
-      <div className="card p-5">
-        <div className="flex items-center gap-2 mb-4">
-          <CloudSun className="h-5 w-5 text-sky-500" />
-          <h3 className="text-sm font-bold text-earth-800">Estación Agroclimática</h3>
-        </div>
-        <div className="grid grid-cols-2 sm:grid-cols-3 gap-4">
-          <ClimateMetric icon={Thermometer} label="Temperatura" value={`${climate.temp}°C`} color="text-clay-600" bg="bg-clay-50" />
-          <ClimateMetric icon={Droplets} label="Humedad Rel." value={`${climate.humidity}%`} color="text-sky-600" bg="bg-sky-50" />
-          <ClimateMetric icon={Droplets} label="Lluvia (24h)" value={`${climate.rainfall}mm`} color="text-sky-600" bg="bg-sky-50" />
-          <ClimateMetric icon={Eye} label="Humedad 0-20cm" value={`${climate.soilShallow}%`} color="text-sky-600" bg="bg-sky-50" />
-          <ClimateMetric icon={Eye} label="Humedad 20-40cm" value={`${climate.soilDeep}%`} color="text-sky-600" bg="bg-sky-50" />
-          <ClimateMetric icon={CloudSun} label="Evapotransp." value={`${climate.eto}mm/d`} color="text-harvest-600" bg="bg-harvest-50" />
-        </div>
-      </div>
-
-      <div>
-        <h3 className="section-title mb-2">Humedad por Lote</h3>
-        {plots.length === 0 ? (
-          <p className="card p-4 text-sm text-earth-500 text-center">Registra lotes para monitorear su humedad.</p>
-        ) : (
-          <div className="space-y-2">
-            {plots.map((p) => (
-              <div key={p.id} className="card p-3">
-                <div className="flex items-center justify-between mb-2">
-                  <span className="text-sm font-semibold text-earth-800">{p.name}</span>
-                  <span className="text-xs text-earth-500">{p.soilMoisture}%</span>
-                </div>
-                <ProgressBar value={p.soilMoisture} max={100} color={p.soilMoisture < 30 ? 'clay' : 'sky'} size="sm" />
-              </div>
-            ))}
-          </div>
-        )}
-      </div>
-
-      <div className="card p-4 bg-sky-50 border-sky-200">
-        <div className="flex items-start gap-3">
-          <Info className="h-5 w-5 text-sky-600 flex-shrink-0 mt-0.5" />
-          <div>
-            <h4 className="text-sm font-bold text-sky-900">¿Qué es la evapotranspiración?</h4>
-            <p className="text-sm text-sky-800 mt-1">
-              La evapotranspiración (ET₀) mide la cantidad de agua que el cultivo pierde por evaporación del suelo y transpiración de la planta. Se usa para calcular cuánta agua de riego necesita el arroz.
-            </p>
-          </div>
-        </div>
-      </div>
-    </div>
-  );
-}
-
-function ClimateMetric({ icon: Icon, label, value, color, bg }: { icon: typeof Thermometer; label: string; value: string; color: string; bg: string }) {
-  return (
-    <div className={`rounded-xl ${bg} p-3`}>
-      <Icon className={`h-5 w-5 ${color} mb-1.5`} />
-      <p className="text-xs text-earth-500 font-medium">{label}</p>
-      <p className="text-lg font-bold text-earth-800">{value}</p>
-    </div>
   );
 }
 
