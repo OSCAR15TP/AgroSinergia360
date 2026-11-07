@@ -10,14 +10,16 @@ import {
 } from 'lucide-react';
 import { DIAGNOSIS_INFO, RECOMMENDATION_INFO, generateRecommendation, analyzePhoto } from '@/lib/coffeeEngine';
 import { uid, formatDate, todayISO } from '@/hooks/useAppData';
+import { CloudSun } from 'lucide-react';
 import { resolveDocPath } from '@/lib/localGuides';
+import { CropWeatherPanel } from '@/components/CropWeatherPanel';
 
 interface CoffeeModuleProps {
   data: AppData;
   update: (updater: (prev: AppData) => AppData) => void;
 }
 
-type Tab = 'diagnostic' | 'history' | 'guide';
+type Tab = 'diagnostic' | 'history' | 'guide' | 'climate';
 
 export function CoffeeModule({ data, update }: CoffeeModuleProps) {
   const [tab, setTab] = useState<Tab>('diagnostic');
@@ -61,6 +63,7 @@ export function CoffeeModule({ data, update }: CoffeeModuleProps) {
         <TabButton active={tab === 'diagnostic'} onClick={() => setTab('diagnostic')} icon={<Camera className="h-4 w-4" />}>Diagnosticar</TabButton>
         <TabButton active={tab === 'history'} onClick={() => setTab('history')} icon={<History className="h-4 w-4" />}>Historial</TabButton>
         <TabButton active={tab === 'guide'} onClick={() => setTab('guide')} icon={<Info className="h-4 w-4" />}>Guía</TabButton>
+        <TabButton active={tab === 'climate'} onClick={() => setTab('climate')} icon={<CloudSun className="h-4 w-4" />}>Clima</TabButton>
       </div>
 
       {/* Tab content */}
@@ -81,6 +84,12 @@ export function CoffeeModule({ data, update }: CoffeeModuleProps) {
       {tab === 'history' && <HistoryTab diagnoses={data.coffeeDiagnoses} onDelete={(id) => update(prev => ({ ...prev, coffeeDiagnoses: prev.coffeeDiagnoses.filter(d => d.id !== id) }))} />}
 
       {tab === 'guide' && <GuideTab />}
+
+      {tab === 'climate' && (
+        <div className="animate-fade-in">
+          <CropWeatherPanel crop="cafe" location={data.farmConfig.location || undefined} />
+        </div>
+      )}
     </div>
   );
 }
