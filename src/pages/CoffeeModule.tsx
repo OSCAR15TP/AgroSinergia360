@@ -6,7 +6,7 @@ import { Badge, EmptyState, ProgressBar } from '@/components/UI';
 import { StatCard } from '@/components/StatCard';
 import {
   Camera, Coffee, Image as ImageIcon, Plus, Trash2, Check, Scissors,
-  Sprout, Bug, Eye, Info, History, FlaskConical, Leaf, ClipboardList, X, Upload,
+  Sprout, Bug, Eye, History, FlaskConical, Leaf, ClipboardList, X, Upload,
 } from 'lucide-react';
 import { DIAGNOSIS_INFO, RECOMMENDATION_INFO, generateRecommendation, analyzePhoto } from '@/lib/coffeeEngine';
 import { uid, formatDate, todayISO } from '@/hooks/useAppData';
@@ -21,7 +21,7 @@ interface CoffeeModuleProps {
   update: (updater: (prev: AppData) => AppData) => void;
 }
 
-type Tab = 'diagnostic' | 'history' | 'guide' | 'climate' | 'calendar';
+type Tab = 'diagnostic' | 'history' | 'climate' | 'calendar';
 
 export function CoffeeModule({ data, update }: CoffeeModuleProps) {
   const [tab, setTab] = useState<Tab>('diagnostic');
@@ -65,7 +65,6 @@ export function CoffeeModule({ data, update }: CoffeeModuleProps) {
       <div className="flex min-w-0 gap-1 overflow-hidden rounded-xl bg-earth-100 p-1">
         <TabButton active={tab === 'diagnostic'} onClick={() => setTab('diagnostic')} icon={<Camera className="h-4 w-4" />}>Diagnosticar</TabButton>
         <TabButton active={tab === 'history'} onClick={() => setTab('history')} icon={<History className="h-4 w-4" />}>Historial</TabButton>
-        <TabButton active={tab === 'guide'} onClick={() => setTab('guide')} icon={<Info className="h-4 w-4" />}>Guía</TabButton>
         <TabButton active={tab === 'climate'} onClick={() => setTab('climate')} icon={<CloudSun className="h-4 w-4" />}>Clima</TabButton>
         <TabButton active={tab === 'calendar'} onClick={() => setTab('calendar')} icon={<CalendarDays className="h-4 w-4" />}>Calendario</TabButton>
       </div>
@@ -86,8 +85,6 @@ export function CoffeeModule({ data, update }: CoffeeModuleProps) {
       )}
 
       {tab === 'history' && <HistoryTab diagnoses={data.coffeeDiagnoses} onDelete={(id) => update(prev => ({ ...prev, coffeeDiagnoses: prev.coffeeDiagnoses.filter(d => d.id !== id) }))} />}
-
-      {tab === 'guide' && <GuideTab />}
 
       {tab === 'climate' && (
         <div className="animate-fade-in">
@@ -482,47 +479,6 @@ function HistoryTab({ diagnoses, onDelete }: { diagnoses: CoffeeDiagnosis[]; onD
               <button onClick={() => onDelete(d.id)} className="flex h-8 w-8 items-center justify-center rounded-lg text-earth-400 hover:bg-clay-50 hover:text-clay-600 transition-colors flex-shrink-0">
                 <Trash2 className="h-4 w-4" />
               </button>
-            </div>
-          </div>
-        );
-      })}
-    </div>
-  );
-}
-
-function GuideTab() {
-  const guides = Object.entries(DIAGNOSIS_INFO);
-  return (
-    <div className="space-y-3 animate-fade-in">
-      <Alert type="info" title="Guía de Plagas y Enfermedades">
-        Referencia visual para identificar problemas comunes en cultivos de café. Usa el diagnóstico por IA para confirmar.
-      </Alert>
-      {guides.map(([key, info]) => {
-        const sevColor = info.severity === 'success' ? 'grove' : info.severity === 'warning' ? 'harvest' : 'clay';
-        const icon = key === 'sana' ? <Check className="h-5 w-5" /> :
-          key === 'roya' ? <Bug className="h-5 w-5" /> :
-          key === 'minador' ? <Bug className="h-5 w-5" /> :
-          key === 'antracnosis' ? <Scissors className="h-5 w-5" /> :
-          <Eye className="h-5 w-5" />;
-        return (
-          <div key={key} className="card p-4">
-            <div className="flex items-start gap-3">
-              <div className={`flex h-10 w-10 items-center justify-center rounded-xl ${info.bgColor} ${info.color} flex-shrink-0`}>
-                {icon}
-              </div>
-              <div className="flex-1">
-                <div className="flex items-center gap-2">
-                  <h4 className="text-sm font-bold text-earth-900">{info.label}</h4>
-                  <Badge color={sevColor as 'grove' | 'harvest' | 'clay'}>
-                    {info.severity === 'success' ? 'Saludable' : info.severity === 'warning' ? 'Moderado' : 'Crítico'}
-                  </Badge>
-                </div>
-                <p className="text-sm text-earth-600 mt-1">{info.description}</p>
-                <div className="mt-2">
-                  <p className="text-xs font-semibold text-earth-500">Síntomas:</p>
-                  <p className="text-xs text-earth-600 mt-0.5">{info.symptoms}</p>
-                </div>
-              </div>
             </div>
           </div>
         );
