@@ -10,18 +10,19 @@ import {
 } from 'lucide-react';
 import { DIAGNOSIS_INFO, RECOMMENDATION_INFO, generateRecommendation, analyzePhoto } from '@/lib/coffeeEngine';
 import { uid, formatDate, todayISO } from '@/hooks/useAppData';
-import { CloudSun, CalendarDays } from 'lucide-react';
+import { CloudSun, CalendarDays, ClipboardList } from 'lucide-react';
 import { resolveDocPath } from '@/lib/localGuides';
 import { CropWeatherPanel } from '@/components/CropWeatherPanel';
 import { CropCalendarPanel } from '@/components/CropCalendarPanel';
 import { useCropGuide } from '@/hooks/useCropGuide';
+import { CropRecordsPanel } from '@/components/CropRecordsPanel';
 
 interface CoffeeModuleProps {
   data: AppData;
   update: (updater: (prev: AppData) => AppData) => void;
 }
 
-type Tab = 'diagnostic' | 'history' | 'climate' | 'calendar';
+type Tab = 'diagnostic' | 'history' | 'climate' | 'calendar' | 'records';
 
 export function CoffeeModule({ data, update }: CoffeeModuleProps) {
   const [tab, setTab] = useState<Tab>('diagnostic');
@@ -67,6 +68,7 @@ export function CoffeeModule({ data, update }: CoffeeModuleProps) {
         <TabButton active={tab === 'history'} onClick={() => setTab('history')} icon={<History className="h-4 w-4" />}>Historial</TabButton>
         <TabButton active={tab === 'climate'} onClick={() => setTab('climate')} icon={<CloudSun className="h-4 w-4" />}>Clima</TabButton>
         <TabButton active={tab === 'calendar'} onClick={() => setTab('calendar')} icon={<CalendarDays className="h-4 w-4" />}>Calendario</TabButton>
+        <TabButton active={tab === 'records'} onClick={() => setTab('records')} icon={<ClipboardList className="h-4 w-4" />}>Registros</TabButton>
       </div>
 
       {/* Tab content */}
@@ -97,6 +99,8 @@ export function CoffeeModule({ data, update }: CoffeeModuleProps) {
           <CropCalendarPanel crop="cafe" data={data} update={update} guide={coffeeGuide} />
         </div>
       )}
+
+      {tab === 'records' && <CropRecordsPanel crop="cafe" data={data} update={update} />}
     </div>
   );
 }

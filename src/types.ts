@@ -56,6 +56,48 @@ export interface CacaoHarvest {
   notes: string;
 }
 
+export interface CoffeeHarvest {
+  id: string;
+  lotName: string;
+  date: string;
+  ripeKg: number;
+  totalKg: number;
+  quality: 'selecta' | 'mixta' | 'baja';
+  notes: string;
+}
+
+export interface RiceHarvest {
+  id: string;
+  plotId: string;
+  date: string;
+  productionKg: number;
+  areaHarvested: number;
+  grainMoisture: number;
+  rotationPhase: number;
+  notes: string;
+}
+
+export type CacaoDisease = 'sana' | 'monilia' | 'escoba_de_bruja';
+
+export interface CacaoDiagnosis {
+  id: string;
+  lotId: string;
+  date: string;
+  result: CacaoDisease;
+  affectedPods: number;
+  notes: string;
+}
+
+export interface CacaoManagementRecord {
+  id: string;
+  lotId: string;
+  date: string;
+  shadePercent: number;
+  shadeAction: 'sin_cambio' | 'poda_sombra' | 'siembra_sombra';
+  phytosanitaryAction: 'ninguna' | 'poda_sanitaria' | 'retiro_mazorcas' | 'fungicida';
+  notes: string;
+}
+
 export interface ClimateData {
   temperature: number;
   humidity: number;
@@ -78,9 +120,13 @@ export interface FarmConfig {
 export interface AppData {
   farmConfig: FarmConfig;
   coffeeDiagnoses: CoffeeDiagnosis[];
+  coffeeHarvests: CoffeeHarvest[];
   ricePlots: RicePlot[];
+  riceHarvests: RiceHarvest[];
   cacaoLots: CacaoLot[];
   cacaoHarvests: CacaoHarvest[];
+  cacaoDiagnoses: CacaoDiagnosis[];
+  cacaoManagement: CacaoManagementRecord[];
   events: FarmEvent[];
   economicRecords: EconomicRecord[];
   carbonRecords: CarbonRecord[];

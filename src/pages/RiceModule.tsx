@@ -6,7 +6,7 @@ import { Badge, EmptyState, ProgressBar } from '@/components/UI';
 import { StatCard } from '@/components/StatCard';
 import {
   Wheat, Plus, Trash2, Check, Droplets, CloudSun, Map, RefreshCw, Camera,
-  Sprout, AlertTriangle, Calculator, X, ArrowRight, CalendarDays,
+  Sprout, AlertTriangle, Calculator, X, ArrowRight, CalendarDays, ClipboardList,
 } from 'lucide-react';
 import { uid, formatDate, todayISO } from '@/hooks/useAppData';
 import { ImageDiagnosisModal } from '@/components/ImageDiagnosisModal';
@@ -15,13 +15,14 @@ import { resolveDocPath } from '@/lib/localGuides';
 import { CropWeatherPanel } from '@/components/CropWeatherPanel';
 import { CropCalendarPanel } from '@/components/CropCalendarPanel';
 import { useCropGuide } from '@/hooks/useCropGuide';
+import { CropRecordsPanel } from '@/components/CropRecordsPanel';
 
 interface RiceModuleProps {
   data: AppData;
   update: (updater: (prev: AppData) => AppData) => void;
 }
 
-type Tab = 'plots' | 'climate' | 'irrigation' | 'calendar';
+type Tab = 'plots' | 'climate' | 'irrigation' | 'calendar' | 'records';
 
 const STATUS_INFO: Record<PlotStatus, { label: string; color: 'grove' | 'sky' | 'harvest' | 'earth'; desc: string }> = {
   produccion: { label: 'En Producción', color: 'grove', desc: 'Cultivo de arroz en fase activa' },
@@ -79,6 +80,7 @@ export function RiceModule({ data, update }: RiceModuleProps) {
         <TabButton active={tab === 'climate'} onClick={() => setTab('climate')} icon={<CloudSun className="h-4 w-4" />}>Agroclima</TabButton>
         <TabButton active={tab === 'irrigation'} onClick={() => setTab('irrigation')} icon={<Droplets className="h-4 w-4" />}>Riego</TabButton>
         <TabButton active={tab === 'calendar'} onClick={() => setTab('calendar')} icon={<CalendarDays className="h-4 w-4" />}>Calendario</TabButton>
+        <TabButton active={tab === 'records'} onClick={() => setTab('records')} icon={<ClipboardList className="h-4 w-4" />}>Registros</TabButton>
       </div>
 
       {tab === 'plots' && (
@@ -95,6 +97,7 @@ export function RiceModule({ data, update }: RiceModuleProps) {
           <CropCalendarPanel crop="arroz" data={data} update={update} guide={riceGuide} />
         </div>
       )}
+      {tab === 'records' && <CropRecordsPanel crop="arroz" data={data} update={update} />}
 
       <ImageDiagnosisModal
         open={showImageDiagnosis}

@@ -19,9 +19,13 @@ export const defaultFarmConfig: FarmConfig = {
 export const defaultData: AppData = {
   farmConfig: defaultFarmConfig,
   coffeeDiagnoses: [],
+  coffeeHarvests: [],
   ricePlots: [],
+  riceHarvests: [],
   cacaoLots: [],
   cacaoHarvests: [],
+  cacaoDiagnoses: [],
+  cacaoManagement: [],
   events: [],
   economicRecords: [],
   carbonRecords: [],

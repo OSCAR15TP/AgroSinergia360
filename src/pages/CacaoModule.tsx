@@ -5,18 +5,19 @@ import { Alert } from '@/components/Alert';
 import { EmptyState } from '@/components/UI';
 import { TabButton } from '@/components/TabButton';
 import { StatCard } from '@/components/StatCard';
-import { Sprout, Plus, Trash2, Check, Map, Wheat, Package, Scale, CloudSun, CalendarDays } from 'lucide-react';
+import { Sprout, Plus, Trash2, Check, Map, Wheat, Package, Scale, CloudSun, CalendarDays, ClipboardList } from 'lucide-react';
 import { uid, formatDate, todayISO } from '@/hooks/useAppData';
 import { CropWeatherPanel } from '@/components/CropWeatherPanel';
 import { CropCalendarPanel } from '@/components/CropCalendarPanel';
 import { useCropGuide } from '@/hooks/useCropGuide';
+import { CropRecordsPanel } from '@/components/CropRecordsPanel';
 
 interface CacaoModuleProps {
   data: AppData;
   update: (updater: (prev: AppData) => AppData) => void;
 }
 
-type Tab = 'lots' | 'harvests' | 'climate' | 'calendar';
+type Tab = 'lots' | 'harvests' | 'climate' | 'calendar' | 'records';
 
 export function CacaoModule({ data, update }: CacaoModuleProps) {
   const [tab, setTab] = useState<Tab>('lots');
@@ -52,6 +53,7 @@ export function CacaoModule({ data, update }: CacaoModuleProps) {
         <TabButton active={tab === 'harvests'} onClick={() => setTab('harvests')} icon={<Wheat className="h-4 w-4" />}>Cosechas</TabButton>
         <TabButton active={tab === 'climate'} onClick={() => setTab('climate')} icon={<CloudSun className="h-4 w-4" />}>Clima</TabButton>
         <TabButton active={tab === 'calendar'} onClick={() => setTab('calendar')} icon={<CalendarDays className="h-4 w-4" />}>Calendario</TabButton>
+        <TabButton active={tab === 'records'} onClick={() => setTab('records')} icon={<ClipboardList className="h-4 w-4" />}>Registros</TabButton>
       </div>
 
       {tab === 'lots' && (
@@ -72,6 +74,7 @@ export function CacaoModule({ data, update }: CacaoModuleProps) {
           <CropCalendarPanel crop="cacao" data={data} update={update} guide={cacaoGuide} />
         </div>
       )}
+      {tab === 'records' && <CropRecordsPanel crop="cacao" data={data} update={update} />}
 
       <AddLotModal
         open={showAddLot}
