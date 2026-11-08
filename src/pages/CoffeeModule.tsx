@@ -10,22 +10,25 @@ import {
 } from 'lucide-react';
 import { DIAGNOSIS_INFO, RECOMMENDATION_INFO, generateRecommendation, analyzePhoto } from '@/lib/coffeeEngine';
 import { uid, formatDate, todayISO } from '@/hooks/useAppData';
-import { CloudSun } from 'lucide-react';
+import { CloudSun, CalendarDays } from 'lucide-react';
 import { resolveDocPath } from '@/lib/localGuides';
 import { CropWeatherPanel } from '@/components/CropWeatherPanel';
+import { CropCalendarPanel } from '@/components/CropCalendarPanel';
+import { useCropGuide } from '@/hooks/useCropGuide';
 
 interface CoffeeModuleProps {
   data: AppData;
   update: (updater: (prev: AppData) => AppData) => void;
 }
 
-type Tab = 'diagnostic' | 'history' | 'guide' | 'climate';
+type Tab = 'diagnostic' | 'history' | 'guide' | 'climate' | 'calendar';
 
 export function CoffeeModule({ data, update }: CoffeeModuleProps) {
   const [tab, setTab] = useState<Tab>('diagnostic');
   const [showNewDiagnosis, setShowNewDiagnosis] = useState(false);
   const [showSoilModal, setShowSoilModal] = useState(false);
   const [soilParams, setSoilParams] = useState<SoilParams>({ ph: 5.5, phosphorus: 15, potassium: 0.4, organicMatter: 3.5 });
+  const { guide: coffeeGuide } = useCropGuide('cafe');
 
   const healthy = data.coffeeDiagnoses.filter(d => d.result === 'sana').length;
   const issues = data.coffeeDiagnoses.length - healthy;
@@ -64,6 +67,7 @@ export function CoffeeModule({ data, update }: CoffeeModuleProps) {
         <TabButton active={tab === 'history'} onClick={() => setTab('history')} icon={<History className="h-4 w-4" />}>Historial</TabButton>
         <TabButton active={tab === 'guide'} onClick={() => setTab('guide')} icon={<Info className="h-4 w-4" />}>Guía</TabButton>
         <TabButton active={tab === 'climate'} onClick={() => setTab('climate')} icon={<CloudSun className="h-4 w-4" />}>Clima</TabButton>
+        <TabButton active={tab === 'calendar'} onClick={() => setTab('calendar')} icon={<CalendarDays className="h-4 w-4" />}>Calendario</TabButton>
       </div>
 
       {/* Tab content */}
@@ -88,6 +92,12 @@ export function CoffeeModule({ data, update }: CoffeeModuleProps) {
       {tab === 'climate' && (
         <div className="animate-fade-in">
           <CropWeatherPanel crop="cafe" location={data.farmConfig.location || undefined} />
+        </div>
+      )}
+
+      {tab === 'calendar' && (
+        <div className="animate-fade-in">
+          <CropCalendarPanel crop="cafe" data={data} update={update} guide={coffeeGuide} />
         </div>
       )}
     </div>

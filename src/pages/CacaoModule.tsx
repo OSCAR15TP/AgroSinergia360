@@ -5,21 +5,24 @@ import { Alert } from '@/components/Alert';
 import { EmptyState } from '@/components/UI';
 import { TabButton } from '@/components/TabButton';
 import { StatCard } from '@/components/StatCard';
-import { Sprout, Plus, Trash2, Check, Map, Wheat, Package, Scale, CloudSun } from 'lucide-react';
+import { Sprout, Plus, Trash2, Check, Map, Wheat, Package, Scale, CloudSun, CalendarDays } from 'lucide-react';
 import { uid, formatDate, todayISO } from '@/hooks/useAppData';
 import { CropWeatherPanel } from '@/components/CropWeatherPanel';
+import { CropCalendarPanel } from '@/components/CropCalendarPanel';
+import { useCropGuide } from '@/hooks/useCropGuide';
 
 interface CacaoModuleProps {
   data: AppData;
   update: (updater: (prev: AppData) => AppData) => void;
 }
 
-type Tab = 'lots' | 'harvests' | 'climate';
+type Tab = 'lots' | 'harvests' | 'climate' | 'calendar';
 
 export function CacaoModule({ data, update }: CacaoModuleProps) {
   const [tab, setTab] = useState<Tab>('lots');
   const [showAddLot, setShowAddLot] = useState(false);
   const [showAddHarvest, setShowAddHarvest] = useState(false);
+  const { guide: cacaoGuide } = useCropGuide('cacao');
 
   const totalArea = data.cacaoLots.reduce((sum, lot) => sum + lot.area, 0);
   const totalTrees = data.cacaoLots.reduce((sum, lot) => sum + lot.trees, 0);
@@ -48,6 +51,7 @@ export function CacaoModule({ data, update }: CacaoModuleProps) {
         <TabButton active={tab === 'lots'} onClick={() => setTab('lots')} icon={<Map className="h-4 w-4" />}>Lotes</TabButton>
         <TabButton active={tab === 'harvests'} onClick={() => setTab('harvests')} icon={<Wheat className="h-4 w-4" />}>Cosechas</TabButton>
         <TabButton active={tab === 'climate'} onClick={() => setTab('climate')} icon={<CloudSun className="h-4 w-4" />}>Clima</TabButton>
+        <TabButton active={tab === 'calendar'} onClick={() => setTab('calendar')} icon={<CalendarDays className="h-4 w-4" />}>Calendario</TabButton>
       </div>
 
       {tab === 'lots' && (
@@ -60,6 +64,12 @@ export function CacaoModule({ data, update }: CacaoModuleProps) {
       {tab === 'climate' && (
         <div className="animate-fade-in">
           <CropWeatherPanel crop="cacao" location={data.farmConfig.location || undefined} />
+        </div>
+      )}
+
+      {tab === 'calendar' && (
+        <div className="animate-fade-in">
+          <CropCalendarPanel crop="cacao" data={data} update={update} guide={cacaoGuide} />
         </div>
       )}
 
