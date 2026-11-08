@@ -6,20 +6,22 @@ import { Badge, EmptyState, ProgressBar } from '@/components/UI';
 import { StatCard } from '@/components/StatCard';
 import {
   Wheat, Plus, Trash2, Check, Droplets, CloudSun, Map, RefreshCw, Camera,
-  Sprout, AlertTriangle, Calculator, X, ArrowRight,
+  Sprout, AlertTriangle, Calculator, X, ArrowRight, CalendarDays,
 } from 'lucide-react';
 import { uid, formatDate, todayISO } from '@/hooks/useAppData';
 import { ImageDiagnosisModal } from '@/components/ImageDiagnosisModal';
 import { analyzeRicePhoto } from '@/lib/visualDiagnosis';
 import { resolveDocPath } from '@/lib/localGuides';
 import { CropWeatherPanel } from '@/components/CropWeatherPanel';
+import { CropCalendarPanel } from '@/components/CropCalendarPanel';
+import { useCropGuide } from '@/hooks/useCropGuide';
 
 interface RiceModuleProps {
   data: AppData;
   update: (updater: (prev: AppData) => AppData) => void;
 }
 
-type Tab = 'plots' | 'climate' | 'irrigation';
+type Tab = 'plots' | 'climate' | 'irrigation' | 'calendar';
 
 const STATUS_INFO: Record<PlotStatus, { label: string; color: 'grove' | 'sky' | 'harvest' | 'earth'; desc: string }> = {
   produccion: { label: 'En Producción', color: 'grove', desc: 'Cultivo de arroz en fase activa' },
@@ -32,6 +34,7 @@ export function RiceModule({ data, update }: RiceModuleProps) {
   const [tab, setTab] = useState<Tab>('plots');
   const [showAddPlot, setShowAddPlot] = useState(false);
   const [showImageDiagnosis, setShowImageDiagnosis] = useState(false);
+  const { guide: riceGuide } = useCropGuide('arroz');
 
   const totalArea = data.ricePlots.reduce((s, p) => s + p.area, 0);
   const inProduction = data.ricePlots.filter(p => p.status === 'produccion').length;
@@ -75,6 +78,7 @@ export function RiceModule({ data, update }: RiceModuleProps) {
         <TabButton active={tab === 'plots'} onClick={() => setTab('plots')} icon={<Map className="h-4 w-4" />}>Lotes SIPAS</TabButton>
         <TabButton active={tab === 'climate'} onClick={() => setTab('climate')} icon={<CloudSun className="h-4 w-4" />}>Agroclima</TabButton>
         <TabButton active={tab === 'irrigation'} onClick={() => setTab('irrigation')} icon={<Droplets className="h-4 w-4" />}>Riego</TabButton>
+        <TabButton active={tab === 'calendar'} onClick={() => setTab('calendar')} icon={<CalendarDays className="h-4 w-4" />}>Calendario</TabButton>
       </div>
 
       {tab === 'plots' && (
@@ -86,6 +90,11 @@ export function RiceModule({ data, update }: RiceModuleProps) {
         </div>
       )}
       {tab === 'irrigation' && <IrrigationTab plots={data.ricePlots} />}
+      {tab === 'calendar' && (
+        <div className="animate-fade-in">
+          <CropCalendarPanel crop="arroz" data={data} update={update} guide={riceGuide} />
+        </div>
+      )}
 
       <ImageDiagnosisModal
         open={showImageDiagnosis}

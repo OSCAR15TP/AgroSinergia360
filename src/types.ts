@@ -89,10 +89,10 @@ export interface AppData {
 export interface FarmEvent {
   id: string;
   date: string;
-  type: 'diagnostico' | 'rotacion' | 'riego' | 'cosecha';
+  type: 'diagnostico' | 'rotacion' | 'riego' | 'cosecha' | 'poda' | 'fertilizacion' | 'sanidad' | 'monitoreo';
   title: string;
   description: string;
-  module: 'coffee' | 'rice' | 'general';
+  module: 'coffee' | 'rice' | 'cacao' | 'general';
   done: boolean;
 }
 
