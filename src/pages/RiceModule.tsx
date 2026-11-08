@@ -71,7 +71,7 @@ export function RiceModule({ data, update }: RiceModuleProps) {
       </div>
 
       {/* Tabs */}
-      <div className="flex gap-1 rounded-xl bg-earth-100 p-1">
+      <div className="flex min-w-0 gap-1 overflow-hidden rounded-xl bg-earth-100 p-1">
         <TabButton active={tab === 'plots'} onClick={() => setTab('plots')} icon={<Map className="h-4 w-4" />}>Lotes SIPAS</TabButton>
         <TabButton active={tab === 'climate'} onClick={() => setTab('climate')} icon={<CloudSun className="h-4 w-4" />}>Agroclima</TabButton>
         <TabButton active={tab === 'irrigation'} onClick={() => setTab('irrigation')} icon={<Droplets className="h-4 w-4" />}>Riego</TabButton>
@@ -103,12 +103,12 @@ function TabButton({ active, onClick, icon, children }: { active: boolean; onCli
   return (
     <button
       onClick={onClick}
-      className={`flex-1 flex items-center justify-center gap-1.5 rounded-lg px-3 py-2 text-sm font-semibold transition-all ${
+      className={`min-w-0 flex-1 flex items-center justify-center gap-1 rounded-lg px-1.5 py-2 text-xs font-semibold transition-all sm:gap-1.5 sm:px-3 sm:text-sm ${
         active ? 'bg-white text-sky-700 shadow-sm' : 'text-earth-500 hover:text-earth-700'
       }`}
     >
       {icon}
-      {children}
+      <span className="truncate">{children}</span>
     </button>
   );
 }
