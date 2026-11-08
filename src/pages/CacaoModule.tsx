@@ -44,7 +44,7 @@ export function CacaoModule({ data, update }: CacaoModuleProps) {
         <StatCard icon={<Scale className="h-5 w-5" />} label="Cacao seco (kg)" value={totalDryKg} color="clay" />
       </div>
 
-      <div className="flex gap-1 rounded-xl bg-earth-100 p-1">
+      <div className="flex min-w-0 gap-1 overflow-hidden rounded-xl bg-earth-100 p-1">
         <TabButton active={tab === 'lots'} onClick={() => setTab('lots')} icon={<Map className="h-4 w-4" />}>Lotes</TabButton>
         <TabButton active={tab === 'harvests'} onClick={() => setTab('harvests')} icon={<Wheat className="h-4 w-4" />}>Cosechas</TabButton>
         <TabButton active={tab === 'climate'} onClick={() => setTab('climate')} icon={<CloudSun className="h-4 w-4" />}>Clima</TabButton>

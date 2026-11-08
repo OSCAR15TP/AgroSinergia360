@@ -25,12 +25,21 @@ interface WeatherCache {
   timestamp: number;
 }
 
+function getLocalDateISO(): string {
+  const now = new Date();
+  const year = now.getFullYear();
+  const month = String(now.getMonth() + 1).padStart(2, '0');
+  const day = String(now.getDate()).padStart(2, '0');
+  return `${year}-${month}-${day}`;
+}
+
 function loadCache(): WeatherCache | null {
   try {
     const raw = localStorage.getItem(CACHE_KEY);
     if (!raw) return null;
     const parsed = JSON.parse(raw) as WeatherCache;
     if (Date.now() - parsed.timestamp > CACHE_TTL) return null;
+    if (parsed.forecast[0]?.date !== getLocalDateISO()) return null;
     return parsed;
   } catch {
     return null;

@@ -8,6 +8,7 @@
     scroll-behavior: smooth;
   }
   body {
+    overflow-x: hidden;
     font-family: 'Plus Jakarta Sans', system-ui, sans-serif;
     background-color: #f8f7f4;
     color: #2c1f13;

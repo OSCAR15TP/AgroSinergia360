@@ -76,7 +76,7 @@ function FarmWorkspace({ user }: { user: AppUser }) {
         <div className="md:pl-64">
           <MobileHeader current={page} farmName={farmName} user={user} onNavigate={handleNavigate} />
 
-          <main className="px-4 py-5 sm:px-6 lg:px-8 pb-24 md:pb-8 max-w-5xl mx-auto">
+          <main className="min-w-0 w-full px-4 py-5 sm:px-6 lg:px-8 pb-24 md:pb-8 max-w-5xl mx-auto">
             {page === 'dashboard' && <Dashboard data={data} onNavigate={handleNavigate} isOnline={isOnline} />}
 
             {page === 'coffee' && data.farmConfig.modules.coffee && (
