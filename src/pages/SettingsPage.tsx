@@ -250,10 +250,12 @@ function ToggleRow({ icon, label, description, value, onChange }: { icon: React.
         <p className="text-xs text-earth-400 dark:text-earth-500">{description}</p>
       </div>
       <button
+        type="button"
         onClick={() => onChange(!value)}
-        className={`relative h-6 w-11 rounded-full transition-colors flex-shrink-0 ${value ? 'bg-grove-500' : 'bg-earth-200 dark:bg-earth-600'}`}
+        aria-pressed={value}
+        className={`relative h-7 w-12 flex-shrink-0 rounded-full p-0 transition-colors focus:outline-none focus:ring-2 focus:ring-grove-300 focus:ring-offset-2 ${value ? 'bg-grove-600' : 'bg-earth-200 dark:bg-earth-600'}`}
       >
-        <span className={`absolute top-0.5 h-5 w-5 rounded-full bg-white shadow-sm transition-transform ${value ? 'translate-x-5' : 'translate-x-0.5'}`} />
+        <span className={`absolute left-1 top-1 h-5 w-5 rounded-full border bg-white shadow-md transition-transform ${value ? 'translate-x-5 border-grove-700' : 'border-earth-300'}`} />
       </button>
     </div>
   );
@@ -264,7 +266,7 @@ function ThemeButton({ active, onClick, icon, label }: { active: boolean; onClic
     <button
       onClick={onClick}
       className={`flex flex-col items-center gap-1.5 rounded-xl border px-3 py-3 text-xs font-semibold transition-all ${
-        active ? 'border-grove-400 bg-grove-50 text-grove-700 dark:bg-grove-800/50 dark:text-grove-300 dark:border-grove-500' : 'border-earth-200 text-earth-500 hover:bg-earth-50 dark:border-earth-600 dark:text-earth-400 dark:hover:bg-earth-700'
+        active ? 'border-grove-400 bg-grove-50 text-grove-700 shadow-sm ring-1 ring-grove-200 dark:bg-grove-800/50 dark:text-grove-300 dark:border-grove-500 dark:ring-grove-700' : 'border-earth-200 text-earth-500 hover:bg-earth-50 dark:border-earth-600 dark:text-earth-400 dark:hover:bg-earth-700'
       }`}
     >
       {icon}

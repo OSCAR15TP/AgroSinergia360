@@ -1,5 +1,5 @@
 import { useWeather } from '@/hooks/useWeather';
-import { getWeatherLabel, type ForecastDay, type WeatherData } from '@/lib/weatherService';
+import { formatForecastWeekday, getWeatherLabel, type ForecastDay, type WeatherData } from '@/lib/weatherService';
 import { AlertTriangle, CloudRain, Droplets, Sun, Thermometer, Wind, MapPin, Loader2, CloudSun } from 'lucide-react';
 import { Alert } from '@/components/Alert';
 import { Badge } from '@/components/UI';
@@ -183,7 +183,7 @@ export function CropWeatherPanel({ crop, location }: CropWeatherPanelProps) {
           <div className="flex gap-2 overflow-x-auto no-scrollbar pb-1">
             {forecast.map((d, i) => (
               <div key={d.date} className="flex-shrink-0 rounded-xl bg-earth-50 dark:bg-earth-800/60 px-3 py-2 text-center min-w-[68px]">
-                <p className="text-[10px] font-medium text-earth-500 dark:text-earth-400">{i === 0 ? 'Hoy' : new Date(d.date).toLocaleDateString('es', { weekday: 'short' })}</p>
+                <p className="text-[10px] font-medium text-earth-500 dark:text-earth-400">{i === 0 ? 'Hoy' : formatForecastWeekday(d.date)}</p>
                 <p className="text-xs font-bold text-earth-900 dark:text-earth-100">{d.tempMax}°</p>
                 <p className="text-[10px] text-earth-400">{d.tempMin}°</p>
                 <div className="mt-1 flex items-center justify-center gap-0.5">
