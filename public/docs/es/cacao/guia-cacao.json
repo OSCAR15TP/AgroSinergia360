@@ -1,0 +1,38 @@
+{
+  "id": "cacao",
+  "module": "cacao",
+  "title": "Guía de Cacao",
+  "summary": "Manejo del cacaotal: monilia, escoba de bruja, sombra, podas, fertilización y cosecha.",
+  "sections": [
+    {
+      "title": "Monilia",
+      "keywords": ["monilia", "moniliasis", "mazorca", "mancha", "pudricion", "hongo", "deformacion"],
+      "content": "Mancha chocolate o deformación en mazorcas jóvenes. Favorecida por lluvia prolongada y humedad alta. Umbral: 5% de mazorcas afectadas. Retirar mazorcas enfermas cada 7-10 días, mejorar drenaje y poda para ventilación. Aplicar fungicida cúprico solo si supera el umbral."
+    },
+    {
+      "title": "Escoba de bruja",
+      "keywords": ["escoba", "bruja", "crinipellis", "moniliophthora", "brote", "deforme", "ramo"],
+      "content": "Brotes deformes en forma de escoba y flores hinchadas. Prolifera con humedad >85%. Poda sanitaria de escobas cada 15 días, enterrarlas o quemarlas. Mejorar ventilación regulando sombra. Variedades resistentes: CCN-51, ICS-95, TSH-565."
+    },
+    {
+      "title": "Sombra y manejo",
+      "keywords": ["sombra", "guabo", "madera", "platano", "companero", "arbol", "regulacion"],
+      "content": "Sombra ideal 30-50% con guabo, plátano o maderables. Exceso de sombra aumenta monilia y escoba de bruja. Podar árboles de sombra 2 veces al año (inicio y fin de lluvias) para mantener ventilación. El plátano da sombra temporal los primeros 3 años."
+    },
+    {
+      "title": "Podas",
+      "keywords": ["poda", "poda sanitaria", "poda formacion", "poda produccion", "ramas", "chupones"],
+      "content": "Poda de formación: eliminar chupones y ramas bajas los primeros 3 años. Poda sanitaria: retirar escobas y ramas enfermas cada 15-30 días. Poda de producción: después de la cosecha principal, eliminar ramas improductivas y mantener el árbol a 3-4 m de altura."
+    },
+    {
+      "title": "Fertilización",
+      "keywords": ["fertilizacion", "fertilizante", "abono", "compost", "npk", "nutricion", "materia organica"],
+      "content": "Referencia anual por árbol: N 60-80 g, P2O5 30-40 g, K2O 80-100 g. Fraccionar en 2-3 aplicaciones al inicio de lluvias. Aplicar 2-4 kg de compost por árbol al año. Mantener materia orgánica del suelo por encima de 3%."
+    },
+    {
+      "title": "Cosecha y poscosecha",
+      "keywords": ["cosecha", "cosecha sanitaria", "fermentacion", "secado", "baba", "fermentado", "calidad", "rendimiento"],
+      "content": "Cosechar mazorcas maduras cada 15-20 días, no dejar mazorcas sobremaduras en el árbol. Desgranar, fermentar 5-7 días en cajones, secar hasta 7-8% de humedad. La cosecha sanitaria (retirar mazorcas enfermas) reduce la monilia hasta 40%."
+    }
+  ]
+}

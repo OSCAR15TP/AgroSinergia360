@@ -19,6 +19,14 @@
       "type": "json"
     },
     {
+      "id": "cacao",
+      "module": "cacao",
+      "title": "Guía de Cacao",
+      "description": "Monilia, escoba de bruja, sombra, podas, fertilización y cosecha del cacao.",
+      "path": "/docs/es/cacao/guia-cacao.json",
+      "type": "json"
+    },
+    {
       "id": "circular",
       "module": "circular",
       "title": "Economía Circular",
