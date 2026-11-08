@@ -36,6 +36,11 @@ export interface FungalRisk {
   reason: string;
 }
 
+export function formatForecastWeekday(date: string, locale = 'es'): string {
+  const [year, month, day] = date.split('-').map(Number);
+  return new Date(year, month - 1, day).toLocaleDateString(locale, { weekday: 'short' });
+}
+
 const WEATHER_CODE_MAP: Record<number, { label: string; icon: string }> = {
   0: { label: 'Despejado', icon: 'sun' },
   1: { label: 'Mayormente despejado', icon: 'sun' },
