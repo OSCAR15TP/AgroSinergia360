@@ -10,7 +10,7 @@ import {
 } from 'lucide-react';
 import { DIAGNOSIS_INFO, RECOMMENDATION_INFO, generateRecommendation, analyzePhoto } from '@/lib/coffeeEngine';
 import { uid, formatDate, todayISO } from '@/hooks/useAppData';
-import { CloudSun, CalendarDays, ClipboardList } from 'lucide-react';
+import { CloudSun, CalendarDays } from 'lucide-react';
 import { resolveDocPath } from '@/lib/localGuides';
 import { CropWeatherPanel } from '@/components/CropWeatherPanel';
 import { CropCalendarPanel } from '@/components/CropCalendarPanel';
