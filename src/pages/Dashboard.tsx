@@ -10,7 +10,7 @@ import {
 } from 'lucide-react';
 import { formatDate, daysUntil } from '@/hooks/useAppData';
 import { useWeather } from '@/hooks/useWeather';
-import { getWeatherLabel } from '@/lib/weatherService';
+import { formatForecastWeekday, getWeatherLabel } from '@/lib/weatherService';
 import { useState } from 'react';
 import { useI18n } from '@/lib/i18n';
 import { resolveDocPath } from '@/lib/localGuides';
@@ -199,7 +199,7 @@ export function Dashboard({ data, onNavigate, isOnline, cloudSynced }: Dashboard
                   {forecast.map((d, i) => (
                     <div key={d.date} className="flex-shrink-0 rounded-xl bg-earth-50 px-3 py-2 text-center min-w-[68px]">
                       <p className="text-[10px] font-medium text-earth-500">
-                        {i === 0 ? t('dash.today') : new Date(d.date).toLocaleDateString(lang === 'pt' ? 'pt-BR' : lang, { weekday: 'short' })}
+                        {i === 0 ? t('dash.today') : formatForecastWeekday(d.date, lang === 'pt' ? 'pt-BR' : lang)}
                       </p>
                       <div className="my-1 flex justify-center">
                         <ForecastIcon code={d.weatherCode} />
