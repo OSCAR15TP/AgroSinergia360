@@ -1,6 +1,6 @@
 import { createContext, useContext, useEffect, useState, type ReactNode } from 'react';
 import type { User } from '@supabase/supabase-js';
-import { supabase } from '@/lib/supabaseClient';
+import { isSupabaseConfigured, supabase } from '@/lib/supabaseClient';
 
 export interface AppUser {
   id: string;
@@ -55,6 +55,11 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
+    if (!isSupabaseConfigured) {
+      setLoading(false);
+      return;
+    }
+
     supabase.auth.getSession()
       .then(({ data }) => setUser(data.session?.user ? toAppUser(data.session.user) : null))
       .catch(() => setUser(null))
@@ -72,6 +77,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     const trimmedFirst = firstName.trim();
     const trimmedLast = lastName.trim();
     if (!trimmedFirst || !trimmedLast) return { error: 'Ingresa tu nombre y apellidos.' };
+    if (!isSupabaseConfigured) return { error: 'La conexión de la aplicación no está configurada en este despliegue.' };
 
     const { data, error } = await supabase.auth.signUp({
       email: email.trim(),
@@ -84,13 +90,15 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   };
 
   const signIn = async (email: string, password: string) => {
+    if (!isSupabaseConfigured) return { error: 'La conexión de la aplicación no está configurada en este despliegue.' };
+
     const { error } = await supabase.auth.signInWithPassword({ email: email.trim(), password });
     if (error) return { error: translateAuthError(error.message) };
     return { error: null };
   };
 
   const signOut = async () => {
-    await supabase.auth.signOut();
+    if (isSupabaseConfigured) await supabase.auth.signOut();
     setUser(null);
   };
 
