@@ -31,6 +31,35 @@ export const defaultData: AppData = {
   carbonRecords: [],
 };
 
+function mergeAppData(value: unknown): AppData {
+  if (!value || typeof value !== 'object') return defaultData;
+
+  const parsed = value as Partial<AppData> & { farmConfig?: Partial<FarmConfig> };
+  return {
+    ...defaultData,
+    ...parsed,
+    farmConfig: {
+      ...defaultFarmConfig,
+      ...parsed.farmConfig,
+      modules: {
+        ...defaultFarmConfig.modules,
+        ...(parsed.farmConfig?.modules ?? {}),
+      },
+    },
+    coffeeDiagnoses: Array.isArray(parsed.coffeeDiagnoses) ? parsed.coffeeDiagnoses : [],
+    coffeeHarvests: Array.isArray(parsed.coffeeHarvests) ? parsed.coffeeHarvests : [],
+    ricePlots: Array.isArray(parsed.ricePlots) ? parsed.ricePlots : [],
+    riceHarvests: Array.isArray(parsed.riceHarvests) ? parsed.riceHarvests : [],
+    cacaoLots: Array.isArray(parsed.cacaoLots) ? parsed.cacaoLots : [],
+    cacaoHarvests: Array.isArray(parsed.cacaoHarvests) ? parsed.cacaoHarvests : [],
+    cacaoDiagnoses: Array.isArray(parsed.cacaoDiagnoses) ? parsed.cacaoDiagnoses : [],
+    cacaoManagement: Array.isArray(parsed.cacaoManagement) ? parsed.cacaoManagement : [],
+    events: Array.isArray(parsed.events) ? parsed.events : [],
+    economicRecords: Array.isArray(parsed.economicRecords) ? parsed.economicRecords : [],
+    carbonRecords: Array.isArray(parsed.carbonRecords) ? parsed.carbonRecords : [],
+  };
+}
+
 function loadLocal(userId: string): AppData {
   try {
     let stored = localStorage.getItem(storageKeyFor(userId));
@@ -41,10 +70,7 @@ function loadLocal(userId: string): AppData {
         localStorage.setItem(LEGACY_CLAIM_KEY, userId);
       }
     }
-    if (stored) {
-      const parsed = JSON.parse(stored) as AppData;
-      return { ...defaultData, ...parsed };
-    }
+    if (stored) return mergeAppData(JSON.parse(stored));
   } catch {
     // ignore corrupted storage
   }
@@ -90,8 +116,7 @@ export function useAppData(userId: string) {
 
   const importData = useCallback((json: string): boolean => {
     try {
-      const parsed = JSON.parse(json) as AppData;
-      setData({ ...defaultData, ...parsed });
+      setData(mergeAppData(JSON.parse(json)));
       return true;
     } catch {
       return false;
